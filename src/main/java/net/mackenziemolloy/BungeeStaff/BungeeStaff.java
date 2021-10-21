@@ -22,7 +22,7 @@ public class BungeeStaff extends Plugin {
 
         generateFiles();
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new ListCommand(this));
-        ProxyServer.getInstance().getLogger().info("Successful Loaded!");
+        this.getLogger().info("[BungeeStaffList] Loaded Successfully - Enjoy!");
 
     }
 
