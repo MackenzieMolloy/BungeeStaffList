@@ -1,0 +1,8 @@
+name: BungeeStaff
+version: 1.0
+main: net.mackenziemolloy.BungeeStaff.BungeeStaff
+author: Mackenzie Molloy
+commands:
+  bungeestaff:
+    aliases: [staff,stafflist,liststaff]
+    description: "Staff List Command"
