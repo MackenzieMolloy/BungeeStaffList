@@ -11,5 +11,5 @@ It hooks into [PremiumVanish](https://www.spigotmc.org/resources/14404/) and [Lu
 - [ ] Alternate list layout similar to Essentials's /list
 - [ ] Support for other Vanish and Rank plugins?
 
-*Got a suggestion? Contact me!*
-[![Discord Support](https://i.imgur.com/eZTGCRO.png)](https://mackenziemolloy.net/discord)
+
+[![Discord Support](https://i.imgur.com/vvSPAXt.png)](https://mackenziemolloy.net/discord)
