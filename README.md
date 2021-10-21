@@ -1,3 +1,4 @@
+<p align="center">
 ![Title](https://i.imgur.com/DRKmBIa.png)
 
 *BungeeStaffList is a plugin for [Bungeecord](https://www.spigotmc.org/wiki/bungeecord/), that shows where all online Staff Members, Players with permision __stafflist.list__, are on the Network.*
@@ -13,3 +14,4 @@ It hooks into [PremiumVanish](https://www.spigotmc.org/resources/14404/) and [Lu
 
 
 [![Discord Support](https://i.imgur.com/vvSPAXt.png)](https://mackenziemolloy.net/discord)
+</p>
