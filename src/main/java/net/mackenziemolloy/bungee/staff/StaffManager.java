@@ -1,48 +1,79 @@
 package net.mackenziemolloy.bungee.staff;
 
-import net.mackenziemolloy.bungee.staff.utility.PlayerComparator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
-import java.util.ArrayList;
-import java.util.List;
 
-import static net.mackenziemolloy.bungee.staff.BungeeStaff.bungeeStaff;
-
-public class StaffManager{
-
-    public static List<StaffMember> getOnlineStaff(boolean includingVanished) {
-        List<StaffMember> staff = new ArrayList<>();
-        for(ProxiedPlayer player: bungeeStaff.getProxy().getPlayers()) {
-            if(player.hasPermission("stafflist.staff")) {
-                StaffMember staffMember = new StaffMember(player.getUniqueId());
-                if(!staffMember.isHidden() || includingVanished) {
-                    staff.add(staffMember);
-                }
+public final class StaffManager{
+    private final BungeeStaff plugin;
+    
+    public StaffManager(BungeeStaff plugin) {
+        this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
+    }
+    
+    public List<StaffMember> getOnlineStaff(boolean includeVanished) {
+        ProxyServer proxy = getProxy();
+        Collection<ProxiedPlayer> playerCollection = proxy.getPlayers();
+        List<StaffMember> staffList = new ArrayList<>();
+        
+        for(ProxiedPlayer player : playerCollection) {
+            if(!player.hasPermission("stafflist.staff")) {
+                continue;
+            }
+            
+            StaffMember staffMember = new StaffMember(this.plugin, player);
+            if(includeVanished || !staffMember.isHidden()) {
+                staffList.add(staffMember);
             }
         }
-        PlayerComparator.sort(staff);
-        return staff;
+    
+        Collections.sort(staffList);
+        return staffList;
     }
 
-    public static String getServerAlias(String serverName) {
-        Configuration configuredAliases = bungeeStaff.configFile.getConfiguration().getSection("server-aliases");
-        if(configuredAliases.getKeys().contains(serverName)) return configuredAliases.getString(serverName);
+    public String getServerAlias(String serverName) {
+        BungeeStaff plugin = getPlugin();
+        Configuration configuration = plugin.getConfig().getConfiguration();
+        Configuration configuredAliases = configuration.getSection("server-aliases");
+        
+        if(configuredAliases.getKeys().contains(serverName)) {
+            return configuredAliases.getString(serverName);
+        }
+        
         return serverName;
     }
 
-    public static String processStaffList(List<StaffMember> staff) {
-        if(staff.isEmpty()) return bungeeStaff.configFile.getConfiguration().getString("stafflist-none");
-        List<String> staffList = new ArrayList<>();
-        for(StaffMember staffMember: staff) {
-            String staffMemberMsg = bungeeStaff.configFile.getConfiguration().getString("staff-format")
+    public String processStaffList(List<StaffMember> staffList) {
+        if(staffList.isEmpty()) {
+            return this.plugin.getConfig().getConfiguration().getString("stafflist-none");
+        }
+        
+        List<String> lineList = new ArrayList<>();
+        for(StaffMember staffMember : staffList) {
+            String staffMemberMsg = this.plugin.getConfig().getConfiguration().getString("staff-format")
                     .replace("{prefix}", staffMember.getPrefix())
                     .replace("{username}", staffMember.getUsername())
                     .replace("{server}", staffMember.getServer());
-            staffList.add(staffMemberMsg);
+            lineList.add(staffMemberMsg);
         }
-        return ChatColor.translateAlternateColorCodes('&', bungeeStaff.configFile.getConfiguration().getString("stafflist-online").replace("{staff}", String.join("\n", staffList)));
+        
+        return ChatColor.translateAlternateColorCodes('&', this.plugin.getConfig().getConfiguration()
+                .getString("stafflist-online").replace("{staff}", String.join("\n", lineList)));
     }
-
+    
+    private BungeeStaff getPlugin() {
+        return this.plugin;
+    }
+    
+    private ProxyServer getProxy() {
+        BungeeStaff plugin = getPlugin();
+        return plugin.getProxy();
+    }
 }

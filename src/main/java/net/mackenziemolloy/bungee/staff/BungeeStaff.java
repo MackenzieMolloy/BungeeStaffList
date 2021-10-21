@@ -12,12 +12,17 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
+import net.mackenziemolloy.bungee.staff.command.CommandList;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 
 public final class BungeeStaff extends Plugin {
+    private final StaffManager staffManager;
+    
     private CommentedConfiguration configuration;
 
     public BungeeStaff() {
+        this.staffManager = new StaffManager(this);
+        
         this.configuration = null;
     }
     
@@ -32,7 +37,7 @@ public final class BungeeStaff extends Plugin {
     
         ProxyServer proxy = getProxy();
         PluginManager pluginManager = proxy.getPluginManager();
-        pluginManager.registerCommand(this, new ListCommand(this));
+        pluginManager.registerCommand(this, new CommandList(this));
         
         Logger logger = getLogger();
         logger.info("Loaded successfully, enjoy!");
@@ -42,6 +47,10 @@ public final class BungeeStaff extends Plugin {
         File dataFolder = getDataFolder();
         File configFile = new File(dataFolder, "config.yml");
         this.configuration = CommentedConfiguration.loadConfiguration(configFile);
+    }
+    
+    public StaffManager getStaffManager() {
+        return this.staffManager;
     }
     
     public CommentedConfiguration getConfig() {
