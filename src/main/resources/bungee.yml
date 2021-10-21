@@ -1,4 +1,4 @@
 name: BungeeStaffList
-version: 1.0
-main: net.mackenziemolloy.BungeeStaff.BungeeStaff
+version: "1.0"
+main: "net.mackenziemolloy.bungee.staff.BungeeStaff"
 author: Mackenzie Molloy
