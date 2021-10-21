@@ -7,7 +7,7 @@ It hooks into [PremiumVanish](https://www.spigotmc.org/resources/14404/) and [Lu
 ![Image Showcase](https://i.imgur.com/3tZnIh6.png)
 
 ![Planned Features](https://i.imgur.com/DMjhF5G.png)
-- [] Optional PremiumVanish and LuckPerms Support. (Both currently a requirement)
+- [x] Optional PremiumVanish and LuckPerms Support. (Both currently a requirement)
 - [] Alternate list layout similar to Essentials's /list
 - [] Support for other Vanish and Rank plugins?
 
