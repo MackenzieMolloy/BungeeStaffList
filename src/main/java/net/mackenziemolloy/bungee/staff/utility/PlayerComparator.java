@@ -1,6 +1,6 @@
-package net.mackenziemolloy.BungeeStaff.Utils;
+package net.mackenziemolloy.bungee.staff.utility;
 
-import net.mackenziemolloy.BungeeStaff.StaffMember;
+import net.mackenziemolloy.bungee.staff.StaffMember;
 
 import java.util.Comparator;
 import java.util.List;

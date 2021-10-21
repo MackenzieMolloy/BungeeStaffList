@@ -1,12 +1,13 @@
-package net.mackenziemolloy.BungeeStaff;
-
-import de.myzelyam.api.vanish.BungeeVanishAPI;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.LuckPerms;
+package net.mackenziemolloy.bungee.staff;
 
 import java.util.UUID;
+
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import de.myzelyam.api.vanish.BungeeVanishAPI;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 
 public class StaffMember {
     private UUID uuid;

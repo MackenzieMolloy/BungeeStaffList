@@ -1,4 +1,4 @@
-package net.mackenziemolloy.BungeeStaff;
+package net.mackenziemolloy.bungee.staff;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;

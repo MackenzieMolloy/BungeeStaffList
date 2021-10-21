@@ -1,13 +1,14 @@
-package net.mackenziemolloy.BungeeStaff;
+package net.mackenziemolloy.bungee.staff;
 
-import net.mackenziemolloy.BungeeStaff.Utils.PlayerComparator;
+import net.mackenziemolloy.bungee.staff.utility.PlayerComparator;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.mackenziemolloy.BungeeStaff.BungeeStaff.bungeeStaff;
+import static net.mackenziemolloy.bungee.staff.BungeeStaff.bungeeStaff;
 
 public class StaffManager{
 
