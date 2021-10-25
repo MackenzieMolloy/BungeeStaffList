@@ -12,3 +12,15 @@ stafflist-none: "\n&cSorry, it looks like there is no staff online :(\n&7"
 server-aliases:
   hub: "THE HUB"
 
+hooks:
+  premiumvanish: false # To-do (make a /staffhide) -mackenzie
+  luckperms: false
+
+# This section is only applicable when no permissions plugin hook is enabled.
+# To apply a user to a group, simply give the permission "stafflist.ranks.<rank-name>" (for example, mod would be "stafflist.ranks.mod")
+# Note: The higher the weight, the higher up in the list the group will be.
+ranks:
+  mod:
+    prefix: "&e[Mod]"
+    weight: 5
+

@@ -53,7 +53,7 @@ public class CommandList extends Command {
     
     private void sendConfigReloadMessage(CommandSender sender) {
         Configuration configuration = getConfiguration();
-        String messageFormat = configuration.getString("config.reload");
+        String messageFormat = configuration.getString("config-reloaded");
         if(messageFormat == null || messageFormat.isEmpty()) {
             return;
         }
@@ -67,7 +67,7 @@ public class CommandList extends Command {
         StaffManager staffManager = getStaffManager();
         List<StaffMember> staffList = staffManager.getOnlineStaff(false);
         
-        String messageFormat = staffManager.processStaffList(staffList);
+        String messageFormat = ChatColor.translateAlternateColorCodes('&', staffManager.processStaffList(staffList));
         BaseComponent[] message = TextComponent.fromLegacyText(messageFormat);
         sender.sendMessage(message);
     }

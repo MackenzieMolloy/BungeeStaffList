@@ -1,9 +1,8 @@
 package net.mackenziemolloy.bungee.staff;
 
-import java.util.Objects;
-import java.util.OptionalInt;
-import java.util.UUID;
+import java.util.*;
 
+import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -17,6 +16,8 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
+import net.md_5.bungee.config.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,51 +67,36 @@ public final class StaffMember implements Comparable<StaffMember> {
         if(player == null) {
             return false;
         }
-        
         return BungeeVanishAPI.isInvisible(player);
     }
     
     @NotNull
     public String getPrefix() {
-        if(this.prefix == null) {
-            LuckPerms luckPerms = LuckPermsProvider.get();
-            UserManager userManager = luckPerms.getUserManager();
-            
-            UUID playerId = getPlayerId();
-            User user = userManager.getUser(playerId);
-            if(user != null) {
-                CachedDataManager cachedData = user.getCachedData();
-                CachedMetaData metaData = cachedData.getMetaData();
-                this.prefix = metaData.getPrefix();
-            }
-        }
-        
-        return (this.prefix == null ? "" : this.prefix);
+        if(LuckPermsHook.isEnabled() && plugin.getConfig().getConfiguration().getBoolean("hooks.luckperms"))
+            return LuckPermsHook.getPrefix(getPlayerId());
+        else return (getGroup(getProxiedPlayer()).get("prefix") == null ? "" : getGroup(getProxiedPlayer()).getString("prefix"));
     }
     
     public int getGroupWeight() {
-        if(this.groupWeight == null) {
-            LuckPerms luckPerms = LuckPermsProvider.get();
-            UserManager userManager = luckPerms.getUserManager();
-            GroupManager groupManager = luckPerms.getGroupManager();
-            
-            UUID playerId = getPlayerId();
-            User user = userManager.getUser(playerId);
-            if(user != null) {
-                String groupName = user.getPrimaryGroup();
-                Group group = groupManager.getGroup(groupName);
-                if(group != null) {
-                    OptionalInt weight = group.getWeight();
-                    this.groupWeight = weight.orElse(0);
-                } else {
-                    this.groupWeight = 0;
-                }
-            } else {
-                this.groupWeight = 0;
+        if(LuckPermsHook.isEnabled() && plugin.getConfig().getConfiguration().getBoolean("hooks.luckperms"))
+            return LuckPermsHook.getWeight(getPlayerId(), this.groupWeight);
+        else return (getGroup(getProxiedPlayer()).get("weight") == null ? 0 : getGroup(getProxiedPlayer()).getInt("weight"));
+    }
+
+    public Configuration getGroup(ProxiedPlayer player) {
+        Configuration ranks = plugin.getConfig().getConfiguration().getSection("ranks");
+        List<String> rankKeys = new ArrayList<>(ranks.getKeys());
+
+        Integer highestGroup = 0;
+        for(int i = 0; i < rankKeys.size(); i++) {
+            if(player.hasPermission("stafflist.rank." + rankKeys.get(i))) {
+                if(ranks.get(rankKeys.get(i) + ".weight") == null) continue;
+                if(ranks.getInt(rankKeys.get(i) + ".weight") > ranks.getSection(rankKeys.get(highestGroup)).getInt("weight")) highestGroup = i;
             }
         }
-        
-        return this.groupWeight;
+
+        ProxyServer.getInstance().getLogger().info(String.valueOf(rankKeys.size()));
+        return (rankKeys.size() == 0 ? ranks : ranks.getSection(rankKeys.get(highestGroup)));
     }
     
     @NotNull
