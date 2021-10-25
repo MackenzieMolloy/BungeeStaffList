@@ -6,11 +6,20 @@
 
 no-permission: "&cYou do not have permission."
 config-reloaded: "&aConfiguration Reloaded."
+player-not-found: "&cPlayer not found."
 staff-format: "{prefix} {username}&7 is currently on &b{server}"
 stafflist-online: "\n&3&lStaff Online\n&7\n{staff}\n&7\n&7Contact online staff with &f/helpop (message)&7.\n&7"
 stafflist-none: "\n&cSorry, it looks like there is no staff online :(\n&7"
 server-aliases:
   hub: "THE HUB"
+
+# These group of messages is only applicable if you don't have a vanish plugin hook enabled.
+staffhide:
+  enabled-placeholder: "&c&o&nHIDDEN&7 from"
+  disabled-placeholder: "&a&o&nREVEALED&7 on"
+  toggle: "&7You have been {state}&7 the staff list."
+  toggle-other: "&b{other}&7 is now {state}&7 the staff list."
+  toggled-by-other: "&b{other}&7 forced you to be {state}&7 the staff list."
 
 hooks:
   premiumvanish: false # To-do (make a /staffhide) -mackenzie

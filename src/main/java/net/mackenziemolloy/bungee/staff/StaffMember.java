@@ -72,19 +72,19 @@ public final class StaffMember implements Comparable<StaffMember> {
     
     @NotNull
     public String getPrefix() {
-        if(LuckPermsHook.isEnabled() && plugin.getConfig().getConfiguration().getBoolean("hooks.luckperms"))
+        if(LuckPermsHook.isEnabled() && plugin.getFromConfig().getBoolean("hooks.luckperms"))
             return LuckPermsHook.getPrefix(getPlayerId());
         else return (getGroup(getProxiedPlayer()).get("prefix") == null ? "" : getGroup(getProxiedPlayer()).getString("prefix"));
     }
     
     public int getGroupWeight() {
-        if(LuckPermsHook.isEnabled() && plugin.getConfig().getConfiguration().getBoolean("hooks.luckperms"))
+        if(LuckPermsHook.isEnabled() && plugin.getFromConfig().getBoolean("hooks.luckperms"))
             return LuckPermsHook.getWeight(getPlayerId(), this.groupWeight);
         else return (getGroup(getProxiedPlayer()).get("weight") == null ? 0 : getGroup(getProxiedPlayer()).getInt("weight"));
     }
 
     public Configuration getGroup(ProxiedPlayer player) {
-        Configuration ranks = plugin.getConfig().getConfiguration().getSection("ranks");
+        Configuration ranks = plugin.getFromConfig().getSection("ranks");
         List<String> rankKeys = new ArrayList<>(ranks.getKeys());
 
         Integer highestGroup = 0;

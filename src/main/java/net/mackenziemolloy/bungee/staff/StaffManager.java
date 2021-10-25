@@ -40,7 +40,7 @@ public final class StaffManager{
 
     public String getServerAlias(String serverName) {
         BungeeStaff plugin = getPlugin();
-        Configuration configuration = plugin.getConfig().getConfiguration();
+        Configuration configuration = plugin.getFromConfig();
         Configuration configuredAliases = configuration.getSection("server-aliases");
         
         if(configuredAliases.getKeys().contains(serverName)) {
@@ -52,19 +52,19 @@ public final class StaffManager{
 
     public String processStaffList(List<StaffMember> staffList) {
         if(staffList.isEmpty()) {
-            return this.plugin.getConfig().getConfiguration().getString("stafflist-none");
+            return this.plugin.getFromConfig().getString("stafflist-none");
         }
         
         List<String> lineList = new ArrayList<>();
         for(StaffMember staffMember : staffList) {
-            String staffMemberMsg = this.plugin.getConfig().getConfiguration().getString("staff-format")
+            String staffMemberMsg = this.plugin.getFromConfig().getString("staff-format")
                     .replace("{prefix}", staffMember.getPrefix())
                     .replace("{username}", staffMember.getUsername())
                     .replace("{server}", staffMember.getServer());
             lineList.add(staffMemberMsg);
         }
         
-        return ChatColor.translateAlternateColorCodes('&', this.plugin.getConfig().getConfiguration()
+        return ChatColor.translateAlternateColorCodes('&', this.plugin.getFromConfig()
                 .getString("stafflist-online").replace("{staff}", String.join("\n", lineList)));
     }
     

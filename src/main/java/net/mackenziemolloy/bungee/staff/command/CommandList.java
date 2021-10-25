@@ -47,8 +47,8 @@ public class CommandList extends Command {
     
     private Configuration getConfiguration() {
         BungeeStaff plugin = getPlugin();
-        CommentedConfiguration config = plugin.getConfig();
-        return config.getConfiguration();
+        Configuration config = plugin.getFromConfig();
+        return config;
     }
     
     private void sendConfigReloadMessage(CommandSender sender) {
