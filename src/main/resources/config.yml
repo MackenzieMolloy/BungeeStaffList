@@ -22,7 +22,7 @@ staffhide:
   toggled-by-other: "&b{other}&7 forced you to be {state}&7 the staff list."
 
 hooks:
-  premiumvanish: false # To-do (make a /staffhide) -mackenzie
+  premiumvanish: false
   luckperms: false
 
 # This section is only applicable when no permissions plugin hook is enabled.

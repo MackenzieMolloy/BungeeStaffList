@@ -60,7 +60,7 @@ public final class StaffMember implements Comparable<StaffMember> {
         if(configuration.getBoolean("hooks.premiumvanish")) {
             PremiumVanishHook premiumVanishHook = new PremiumVanishHook(plugin);
             if(premiumVanishHook.isEnabled()) {
-                return premiumVanishHook.isVanished(player.getUniqueId());
+                return premiumVanishHook.isVanished(player);
             }
             else return (plugin.getFromDataStorage().get(player.getUniqueId().toString()) == null ? false : plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString()));
         }

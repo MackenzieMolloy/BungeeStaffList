@@ -2,10 +2,11 @@ package net.mackenziemolloy.bungee.staff.hooks;
 
 import java.util.UUID;
 
+import de.myzelyam.api.vanish.BungeeVanishAPI;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
-import de.myzelyam.api.vanish.VanishAPI;
 import net.mackenziemolloy.bungee.staff.BungeeStaff;
 
 public final class PremiumVanishHook extends Hook {
@@ -19,7 +20,7 @@ public final class PremiumVanishHook extends Hook {
         return (premiumVanish != null);
     }
     
-    public boolean isVanished(UUID playerId) {
-        return VanishAPI.isInvisibleOffline(playerId);
+    public boolean isVanished(ProxiedPlayer player) {
+        return BungeeVanishAPI.isInvisible(player);
     }
 }

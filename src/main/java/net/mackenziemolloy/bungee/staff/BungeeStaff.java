@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.luckperms.api.LuckPerms;
+import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -42,7 +44,6 @@ public final class BungeeStaff extends Plugin {
         ProxyServer proxy = getProxy();
         PluginManager pluginManager = proxy.getPluginManager();
         pluginManager.registerCommand(this, new CommandList(this));
-        pluginManager.registerCommand(this, new CommandStaffHide(this));
         
         Logger logger = getLogger();
         logger.info("Loaded successfully, enjoy!");
@@ -137,6 +138,7 @@ public final class BungeeStaff extends Plugin {
             configuration.syncWithConfig(configFile, jarConfigStream);
             
             this.configurationMap.put(configName, configuration);
+
         } catch(IOException ex) {
             Logger logger = getLogger();
             logger.log(Level.WARNING, "An error occurred while reloading '" + configName
@@ -147,6 +149,7 @@ public final class BungeeStaff extends Plugin {
             
             this.configurationMap.put(configName, emptyConfig);
         }
+
     }
     
     public void saveConfig(String configName) {
