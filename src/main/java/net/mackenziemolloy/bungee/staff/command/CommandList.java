@@ -18,7 +18,7 @@ public final class CommandList extends Command {
     private final BungeeStaff plugin;
 
     public CommandList(BungeeStaff plugin) {
-        super("bungeestaff","","staff","stafflist","liststaff");
+        super("bungeestaff","","staff", "stafflist", "liststaff");
         this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
     }
 
@@ -46,8 +46,7 @@ public final class CommandList extends Command {
     
     private Configuration getConfiguration() {
         BungeeStaff plugin = getPlugin();
-        Configuration config = plugin.getFromConfig();
-        return config;
+        return plugin.getFromConfig();
     }
     
     private void sendConfigReloadMessage(CommandSender sender) {
@@ -65,8 +64,9 @@ public final class CommandList extends Command {
     private void showStaffList(CommandSender sender) {
         StaffManager staffManager = getStaffManager();
         List<StaffMember> staffList = staffManager.getOnlineStaff(false);
-        
-        String messageFormat = ChatColor.translateAlternateColorCodes('&', staffManager.processStaffList(staffList));
+    
+        String processStaffList = staffManager.processStaffList(staffList);
+        String messageFormat = ChatColor.translateAlternateColorCodes('&', processStaffList);
         BaseComponent[] message = TextComponent.fromLegacyText(messageFormat);
         sender.sendMessage(message);
     }
