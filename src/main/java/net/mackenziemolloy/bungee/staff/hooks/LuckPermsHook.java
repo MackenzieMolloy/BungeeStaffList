@@ -28,7 +28,7 @@ public final class LuckPermsHook extends Hook {
         Plugin luckPerms = pluginManager.getPlugin("LuckPerms");
         return (luckPerms != null);
     }
-
+    
     public String getPrefix(UUID playerId) {
         User user = getUser(playerId);
         if(user == null) {
@@ -40,13 +40,13 @@ public final class LuckPermsHook extends Hook {
         String prefix = metaData.getPrefix();
         return (prefix == null ? "" : prefix);
     }
-
+    
     public Integer getWeight(UUID playerId) {
         User user = getUser(playerId);
         if(user == null) {
             return 0;
         }
-    
+        
         LuckPerms api = getAPI();
         String groupName = user.getPrimaryGroup();
         GroupManager groupManager = api.getGroupManager();
@@ -54,7 +54,7 @@ public final class LuckPermsHook extends Hook {
         if(group == null) {
             return 0;
         }
-    
+        
         OptionalInt optionalWeight = group.getWeight();
         return optionalWeight.orElse(0);
     }

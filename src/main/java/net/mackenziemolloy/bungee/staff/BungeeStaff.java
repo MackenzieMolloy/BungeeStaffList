@@ -25,7 +25,7 @@ import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 public final class BungeeStaff extends Plugin {
     private final StaffManager staffManager;
     private final Map<String, CommentedConfiguration> configurationMap;
-
+    
     public BungeeStaff() {
         this.staffManager = new StaffManager(this);
         this.configurationMap = new HashMap<>();
@@ -63,7 +63,7 @@ public final class BungeeStaff extends Plugin {
     public void reloadConfig() {
         reloadConfig("config.yml");
     }
-
+    
     public CommentedConfiguration getDataStorage() {
         return getConfig("data.yml");
     }
@@ -73,7 +73,7 @@ public final class BungeeStaff extends Plugin {
     }
     
     private void saveResource(String name) {
-        try (InputStream stream = getResourceAsStream(name)){
+        try(InputStream stream = getResourceAsStream(name)) {
             File dataFolder = getDataFolder();
             File file = new File(dataFolder, name);
             
@@ -125,13 +125,13 @@ public final class BungeeStaff extends Plugin {
             if(!configFile.exists()) {
                 Logger logger = getLogger();
                 logger.info(configName + " does not exist, loading as empty configuration.");
-    
+                
                 CommentedConfiguration emptyConfig = new CommentedConfiguration();
                 emptyConfig.loadFromString("");
-    
+                
                 this.configurationMap.put(configName, emptyConfig);
             }
-    
+            
             InputStream jarConfigStream = getResourceAsStream(configName);
             CommentedConfiguration configuration = CommentedConfiguration.loadConfiguration(configFile);
             configuration.syncWithConfig(configFile, jarConfigStream);
@@ -154,7 +154,7 @@ public final class BungeeStaff extends Plugin {
             CommentedConfiguration configuration = getConfig(configName);
             String configurationString = configuration.saveToString();
             byte[] configurationData = configurationString.getBytes(StandardCharsets.UTF_8);
-    
+            
             File dataFolder = getDataFolder();
             File configFile = new File(dataFolder, configName);
             

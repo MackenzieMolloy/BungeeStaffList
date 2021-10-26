@@ -14,12 +14,12 @@ import net.mackenziemolloy.bungee.staff.BungeeStaff;
 
 public final class CommandStaffHide extends Command {
     private final BungeeStaff plugin;
-
+    
     public CommandStaffHide(BungeeStaff plugin) {
         super("staffhide", "stafflist.staff", "stafflisthide");
         this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
     }
-
+    
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(sender instanceof ProxiedPlayer) {
@@ -29,9 +29,7 @@ public final class CommandStaffHide extends Command {
             String noPermission = ChatColor.translateAlternateColorCodes('&', noPermissionFormat);
             if(!sender.hasPermission("stafflist.staff")) {
                 sendMessage(sender, noPermission);
-            }
-
-            else if(args.length > 0 && sender.hasPermission("stafflist.hideothers")) {
+            } else if(args.length > 0 && sender.hasPermission("stafflist.hideothers")) {
                 ProxiedPlayer target = ProxyServer.getInstance().getPlayer(args[0]);
                 if(target == null) {
                     String messageFormat = plugin.getConfig().getConfiguration().getString("player-not-found");
@@ -40,13 +38,11 @@ public final class CommandStaffHide extends Command {
                 } else {
                     togglePlayerVisibility(target, player);
                 }
-            }
-
-            else togglePlayerVisibility(player);
+            } else togglePlayerVisibility(player);
         }
-
+        
     }
-
+    
     public void togglePlayerVisibility(ProxiedPlayer player) {
         boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString(), false);
         String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
@@ -57,16 +53,15 @@ public final class CommandStaffHide extends Command {
                     ChatColor.translateAlternateColorCodes('&',
                             plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
             plugin.saveConfig("data.yml");
-        }
-        else {
+        } else {
             plugin.getFromDataStorage().set(player.getUniqueId().toString(), false);
             sendMessage(player, playerHideToggledMsg.replace("{state}",
                     ChatColor.translateAlternateColorCodes('&',
                             plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
-
+            
         }
     }
-
+    
     public void togglePlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender) {
         if(target == sender) {
             togglePlayerVisibility(sender);

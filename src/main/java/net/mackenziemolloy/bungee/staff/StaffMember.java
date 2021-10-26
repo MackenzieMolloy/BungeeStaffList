@@ -49,7 +49,7 @@ public final class StaffMember implements Comparable<StaffMember> {
         ProxyServer proxy = ProxyServer.getInstance();
         return proxy.getPlayer(playerId);
     }
-
+    
     public boolean isHidden() {
         ProxiedPlayer player = getProxiedPlayer();
         if(player == null) {
@@ -85,24 +85,25 @@ public final class StaffMember implements Comparable<StaffMember> {
                 return luckPermsHook.getWeight(playerId);
             }
         }
-    
+        
         ProxiedPlayer player = getProxiedPlayer();
         Configuration group = getGroup(player);
         return group.getInt("weight", 0);
     }
-
+    
     public Configuration getGroup(ProxiedPlayer player) {
         Configuration ranks = plugin.getFromConfig().getSection("ranks");
         List<String> rankKeys = new ArrayList<>(ranks.getKeys());
-
+        
         int highestGroup = 0;
         for(int i = 0; i < rankKeys.size(); i++) {
             if(player.hasPermission("stafflist.rank." + rankKeys.get(i))) {
                 if(ranks.get(rankKeys.get(i) + ".weight") == null) continue;
-                if(ranks.getInt(rankKeys.get(i) + ".weight") > ranks.getSection(rankKeys.get(highestGroup)).getInt("weight")) highestGroup = i;
+                if(ranks.getInt(rankKeys.get(i) + ".weight") > ranks.getSection(rankKeys.get(highestGroup)).getInt("weight"))
+                    highestGroup = i;
             }
         }
-
+        
         ProxyServer.getInstance().getLogger().info(String.valueOf(rankKeys.size()));
         return (rankKeys.size() == 0 ? ranks : ranks.getSection(rankKeys.get(highestGroup)));
     }
@@ -113,7 +114,7 @@ public final class StaffMember implements Comparable<StaffMember> {
         if(player == null) {
             return "";
         }
-    
+        
         Server server = player.getServer();
         String serverName = server.getInfo().getName();
         return this.plugin.getStaffManager().getServerAlias(serverName);
