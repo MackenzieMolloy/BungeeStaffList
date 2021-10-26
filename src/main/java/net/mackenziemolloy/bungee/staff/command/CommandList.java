@@ -13,16 +13,15 @@ import net.md_5.bungee.config.Configuration;
 import net.mackenziemolloy.bungee.staff.BungeeStaff;
 import net.mackenziemolloy.bungee.staff.StaffManager;
 import net.mackenziemolloy.bungee.staff.StaffMember;
-import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 
-public class CommandList extends Command {
+public final class CommandList extends Command {
     private final BungeeStaff plugin;
-
+    
     public CommandList(BungeeStaff plugin) {
-        super("bungeestaff","","staff","stafflist","liststaff");
+        super("bungeestaff", "", "staff", "stafflist", "liststaff");
         this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
     }
-
+    
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length > 0 && args[0].equalsIgnoreCase("reload")) {
@@ -47,8 +46,7 @@ public class CommandList extends Command {
     
     private Configuration getConfiguration() {
         BungeeStaff plugin = getPlugin();
-        Configuration config = plugin.getFromConfig();
-        return config;
+        return plugin.getFromConfig();
     }
     
     private void sendConfigReloadMessage(CommandSender sender) {
@@ -67,7 +65,8 @@ public class CommandList extends Command {
         StaffManager staffManager = getStaffManager();
         List<StaffMember> staffList = staffManager.getOnlineStaff(false);
         
-        String messageFormat = ChatColor.translateAlternateColorCodes('&', staffManager.processStaffList(staffList));
+        String processStaffList = staffManager.processStaffList(staffList);
+        String messageFormat = ChatColor.translateAlternateColorCodes('&', processStaffList);
         BaseComponent[] message = TextComponent.fromLegacyText(messageFormat);
         sender.sendMessage(message);
     }

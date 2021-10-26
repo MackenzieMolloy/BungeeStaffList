@@ -11,7 +11,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
-public final class StaffManager{
+public final class StaffManager {
     private final BungeeStaff plugin;
     
     public StaffManager(BungeeStaff plugin) {
@@ -33,11 +33,11 @@ public final class StaffManager{
                 staffList.add(staffMember);
             }
         }
-    
+        
         Collections.sort(staffList);
         return staffList;
     }
-
+    
     public String getServerAlias(String serverName) {
         BungeeStaff plugin = getPlugin();
         Configuration configuration = plugin.getFromConfig();
@@ -49,7 +49,7 @@ public final class StaffManager{
         
         return serverName;
     }
-
+    
     public String processStaffList(List<StaffMember> staffList) {
         if(staffList.isEmpty()) {
             return this.plugin.getFromConfig().getString("stafflist-none");

@@ -1,23 +1,17 @@
 package net.mackenziemolloy.bungee.staff;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.config.Configuration;
 
 import de.myzelyam.api.vanish.BungeeVanishAPI;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.cacheddata.CachedDataManager;
-import net.luckperms.api.cacheddata.CachedMetaData;
-import net.luckperms.api.model.group.Group;
-import net.luckperms.api.model.group.GroupManager;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.model.user.UserManager;
-import net.md_5.bungee.config.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
+import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,9 +22,6 @@ public final class StaffMember implements Comparable<StaffMember> {
     private final String username;
     private final String displayName;
     
-    private transient String prefix;
-    private transient Integer groupWeight;
-    
     public StaffMember(BungeeStaff plugin, ProxiedPlayer player) {
         this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
         Objects.requireNonNull(player, "player must not be null!");
@@ -38,9 +29,10 @@ public final class StaffMember implements Comparable<StaffMember> {
         this.playerId = player.getUniqueId();
         this.username = player.getName();
         this.displayName = player.getDisplayName();
-        
-        this.prefix = null;
-        this.groupWeight = null;
+    }
+    
+    private BungeeStaff getPlugin() {
+        return this.plugin;
     }
     
     public UUID getPlayerId() {
@@ -51,17 +43,13 @@ public final class StaffMember implements Comparable<StaffMember> {
         return this.username;
     }
     
-    public String getDisplayName() {
-        return this.displayName;
-    }
-    
     @Nullable
     public ProxiedPlayer getProxiedPlayer() {
         UUID playerId = getPlayerId();
         ProxyServer proxy = ProxyServer.getInstance();
         return proxy.getPlayer(playerId);
     }
-
+    
     public boolean isHidden() {
         ProxiedPlayer player = getProxiedPlayer();
         if(player == null) {
@@ -72,29 +60,50 @@ public final class StaffMember implements Comparable<StaffMember> {
     
     @NotNull
     public String getPrefix() {
-        if(LuckPermsHook.isEnabled() && plugin.getFromConfig().getBoolean("hooks.luckperms"))
-            return LuckPermsHook.getPrefix(getPlayerId());
-        else return (getGroup(getProxiedPlayer()).get("prefix") == null ? "" : getGroup(getProxiedPlayer()).getString("prefix"));
+        BungeeStaff plugin = getPlugin();
+        Configuration configuration = plugin.getFromConfig();
+        if(configuration.getBoolean("hooks.luckperms")) {
+            LuckPermsHook luckPermsHook = new LuckPermsHook(plugin);
+            if(luckPermsHook.isEnabled()) {
+                UUID playerId = getPlayerId();
+                return luckPermsHook.getPrefix(playerId);
+            }
+        }
+        
+        ProxiedPlayer player = getProxiedPlayer();
+        Configuration group = getGroup(player);
+        return group.getString("prefix", "");
     }
     
     public int getGroupWeight() {
-        if(LuckPermsHook.isEnabled() && plugin.getFromConfig().getBoolean("hooks.luckperms"))
-            return LuckPermsHook.getWeight(getPlayerId(), this.groupWeight);
-        else return (getGroup(getProxiedPlayer()).get("weight") == null ? 0 : getGroup(getProxiedPlayer()).getInt("weight"));
+        BungeeStaff plugin = getPlugin();
+        Configuration configuration = plugin.getFromConfig();
+        if(configuration.getBoolean("hooks.luckperms")) {
+            LuckPermsHook luckPermsHook = new LuckPermsHook(plugin);
+            if(luckPermsHook.isEnabled()) {
+                UUID playerId = getPlayerId();
+                return luckPermsHook.getWeight(playerId);
+            }
+        }
+        
+        ProxiedPlayer player = getProxiedPlayer();
+        Configuration group = getGroup(player);
+        return group.getInt("weight", 0);
     }
-
+    
     public Configuration getGroup(ProxiedPlayer player) {
         Configuration ranks = plugin.getFromConfig().getSection("ranks");
         List<String> rankKeys = new ArrayList<>(ranks.getKeys());
-
-        Integer highestGroup = 0;
+        
+        int highestGroup = 0;
         for(int i = 0; i < rankKeys.size(); i++) {
             if(player.hasPermission("stafflist.rank." + rankKeys.get(i))) {
                 if(ranks.get(rankKeys.get(i) + ".weight") == null) continue;
-                if(ranks.getInt(rankKeys.get(i) + ".weight") > ranks.getSection(rankKeys.get(highestGroup)).getInt("weight")) highestGroup = i;
+                if(ranks.getInt(rankKeys.get(i) + ".weight") > ranks.getSection(rankKeys.get(highestGroup)).getInt("weight"))
+                    highestGroup = i;
             }
         }
-
+        
         ProxyServer.getInstance().getLogger().info(String.valueOf(rankKeys.size()));
         return (rankKeys.size() == 0 ? ranks : ranks.getSection(rankKeys.get(highestGroup)));
     }
@@ -105,7 +114,7 @@ public final class StaffMember implements Comparable<StaffMember> {
         if(player == null) {
             return "";
         }
-    
+        
         Server server = player.getServer();
         String serverName = server.getInfo().getName();
         return this.plugin.getStaffManager().getServerAlias(serverName);
