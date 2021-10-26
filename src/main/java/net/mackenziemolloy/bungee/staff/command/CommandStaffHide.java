@@ -64,8 +64,34 @@ public final class CommandStaffHide extends Command {
     }
 
     public void togglePlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender) {
-        if(target == sender) {
-            togglePlayerVisibility(sender);
+        if(target == sender) togglePlayerVisibility(sender);
+        else {
+            boolean playerHideState = plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString(), false);
+            String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
+            String otherPlayerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
+            if(!playerHideState) {
+                plugin.getFromDataStorage().set(target.getUniqueId().toString(), true);
+                sendMessage(target, playerHideToggledMsg.replace("{state}",
+                        ChatColor.translateAlternateColorCodes('&',
+                                plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+                sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
+                        ChatColor.translateAlternateColorCodes('&',
+                                plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+
+                plugin.saveConfig("data.yml");
+            } else {
+                plugin.getFromDataStorage().set(target.getUniqueId().toString(), false);
+                sendMessage(target, playerHideToggledMsg.replace("{state}",
+                        ChatColor.translateAlternateColorCodes('&',
+                                plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
+                sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
+                        ChatColor.translateAlternateColorCodes('&',
+                                plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
+
+                plugin.saveConfig("data.yml");
+            }
         }
     }
 

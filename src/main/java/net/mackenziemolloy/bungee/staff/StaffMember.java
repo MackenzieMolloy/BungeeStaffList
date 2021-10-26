@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -52,10 +53,18 @@ public final class StaffMember implements Comparable<StaffMember> {
     
     public boolean isHidden() {
         ProxiedPlayer player = getProxiedPlayer();
-        if(player == null) {
-            return false;
+        if(player == null) return false;
+
+        BungeeStaff plugin = getPlugin();
+        Configuration configuration = plugin.getFromConfig();
+        if(configuration.getBoolean("hooks.premiumvanish")) {
+            PremiumVanishHook premiumVanishHook = new PremiumVanishHook(plugin);
+            if(premiumVanishHook.isEnabled()) {
+                return premiumVanishHook.isVanished(player.getUniqueId());
+            }
+            else return (plugin.getFromDataStorage().get(player.getUniqueId().toString()) == null ? false : plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString()));
         }
-        return BungeeVanishAPI.isInvisible(player);
+        return (plugin.getFromDataStorage().get(player.getUniqueId().toString()) == null ? false : plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString()));
     }
     
     @NotNull
@@ -84,6 +93,9 @@ public final class StaffMember implements Comparable<StaffMember> {
                 UUID playerId = getPlayerId();
                 return luckPermsHook.getWeight(playerId);
             }
+            ProxiedPlayer player = getProxiedPlayer();
+            Configuration group = getGroup(player);
+            return group.getInt("weight", 0);
         }
         
         ProxiedPlayer player = getProxiedPlayer();
