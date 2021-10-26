@@ -14,17 +14,17 @@ import net.mackenziemolloy.bungee.staff.BungeeStaff;
 
 public final class CommandStaffHide extends Command {
     private final BungeeStaff plugin;
-    
+
     public CommandStaffHide(BungeeStaff plugin) {
         super("staffhide", "stafflist.staff", "stafflisthide");
         this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
     }
-    
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            
+
             String noPermissionFormat = plugin.getConfig().getConfiguration().getString("no-permission");
             String noPermission = ChatColor.translateAlternateColorCodes('&', noPermissionFormat);
             if(!sender.hasPermission("stafflist.staff")) {
@@ -40,9 +40,9 @@ public final class CommandStaffHide extends Command {
                 }
             } else togglePlayerVisibility(player);
         }
-        
+
     }
-    
+
     public void togglePlayerVisibility(ProxiedPlayer player) {
         boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString(), false);
         String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
@@ -58,16 +58,17 @@ public final class CommandStaffHide extends Command {
             sendMessage(player, playerHideToggledMsg.replace("{state}",
                     ChatColor.translateAlternateColorCodes('&',
                             plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
-            
+
+            plugin.saveConfig("data.yml");
         }
     }
-    
+
     public void togglePlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender) {
         if(target == sender) {
             togglePlayerVisibility(sender);
         }
     }
-    
+
     private void sendMessage(CommandSender sender, String messageString) {
         BaseComponent[] message = TextComponent.fromLegacyText(messageString);
         sender.sendMessage(message);
