@@ -13,9 +13,8 @@ import net.md_5.bungee.config.Configuration;
 import net.mackenziemolloy.bungee.staff.BungeeStaff;
 import net.mackenziemolloy.bungee.staff.StaffManager;
 import net.mackenziemolloy.bungee.staff.StaffMember;
-import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 
-public class CommandList extends Command {
+public final class CommandList extends Command {
     private final BungeeStaff plugin;
 
     public CommandList(BungeeStaff plugin) {

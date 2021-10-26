@@ -1,13 +1,14 @@
 package net.mackenziemolloy.bungee.staff.command;
 
-import net.mackenziemolloy.bungee.staff.BungeeStaff;
+import java.util.Objects;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.Objects;
+import net.mackenziemolloy.bungee.staff.BungeeStaff;
 
 public class CommandStaffHide extends Command {
     private final BungeeStaff plugin;
@@ -41,7 +42,7 @@ public class CommandStaffHide extends Command {
         if(playerHideState == null || playerHideState == false) {
             plugin.getFromDataStorage().set(player.getUniqueId().toString(), true);
             player.sendMessage(playerHideToggledMsg.replace("{state}",ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
-            plugin.generateFiles();
+            plugin.saveConfig("data.yml");
         }
         else {
             plugin.getFromDataStorage().set(player.getUniqueId().toString(), false);
