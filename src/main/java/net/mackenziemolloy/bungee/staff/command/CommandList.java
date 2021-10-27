@@ -69,5 +69,9 @@ public final class CommandList extends Command {
         String messageFormat = ChatColor.translateAlternateColorCodes('&', processStaffList);
         BaseComponent[] message = TextComponent.fromLegacyText(messageFormat);
         sender.sendMessage(message);
+
+        if(plugin.getFromConfig().getBoolean("notice-understood") == false) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cNotice: If you are using LuckPerms, or PremiumVanish and are wondering why rank prefixes/ordering isn't showing correctly - similarly with being in vanish... you need to enable the hooks in the &nconfig.yml&c.\n&cAdditionally, to hide this message &nset notice-understood to true &cat the &nbottom of the config.yml&c."));
+        }
     }
 }

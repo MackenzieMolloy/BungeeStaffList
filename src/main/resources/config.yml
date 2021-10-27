@@ -33,3 +33,4 @@ ranks:
     prefix: "&e[Mod]"
     weight: 5
 
+notice-understood: false
