@@ -8,8 +8,8 @@ no-permission: "&cYou do not have permission."
 config-reloaded: "&aConfiguration Reloaded."
 player-not-found: "&cPlayer not found."
 staff-format: "{prefix} {username}&7 is currently on &b{server}"
-stafflist-online: "\n&3&lStaff Online\n&7\n{staff}\n&7\n&7Contact online staff with &f/helpop (message)&7.\n&7"
-stafflist-none: "\n&cSorry, it looks like there is no staff online :(\n&7"
+stafflist-online: "{/n}&3&lStaff Online{/n}&7{/n}{staff}{/n}&7{/n}&7Contact online staff with &f/helpop (message)&7.{/n}&7"
+stafflist-none: "{/n}&cSorry, it looks like there is no staff online :({/n}&7"
 server-aliases:
   hub: "THE HUB"
 

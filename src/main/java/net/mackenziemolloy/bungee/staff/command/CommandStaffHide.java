@@ -96,6 +96,7 @@ public final class CommandStaffHide extends Command {
     }
 
     private void sendMessage(CommandSender sender, String messageString) {
+        messageString = messageString.replace("{/n}", "\n");
         BaseComponent[] message = TextComponent.fromLegacyText(messageString);
         sender.sendMessage(message);
     }

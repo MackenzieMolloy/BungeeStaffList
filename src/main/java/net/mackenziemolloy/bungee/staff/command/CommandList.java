@@ -55,7 +55,8 @@ public final class CommandList extends Command {
         if(messageFormat == null || messageFormat.isEmpty()) {
             return;
         }
-        
+    
+        messageFormat = messageFormat.replace("{/n}", "\n");
         String color = ChatColor.translateAlternateColorCodes('&', messageFormat);
         BaseComponent[] message = TextComponent.fromLegacyText(color);
         sender.sendMessage(message);
@@ -67,6 +68,8 @@ public final class CommandList extends Command {
         
         String processStaffList = staffManager.processStaffList(staffList);
         String messageFormat = ChatColor.translateAlternateColorCodes('&', processStaffList);
+        messageFormat = messageFormat.replace("{/n}", "\n");
+        
         BaseComponent[] message = TextComponent.fromLegacyText(messageFormat);
         sender.sendMessage(message);
 

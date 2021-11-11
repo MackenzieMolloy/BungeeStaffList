@@ -41,6 +41,9 @@ public final class BungeeStaff extends Plugin {
     
     @Override
     public void onEnable() {
+        reloadConfig("config.yml");
+        reloadConfig("data.yml");
+        
         ProxyServer proxy = getProxy();
         PluginManager pluginManager = proxy.getPluginManager();
         pluginManager.registerCommand(this, new CommandList(this));
