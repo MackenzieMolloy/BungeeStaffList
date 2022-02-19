@@ -2,6 +2,7 @@ package net.mackenziemolloy.bungee.staff.command;
 
 import java.util.Objects;
 
+import net.mackenziemolloy.bungee.staff.StaffManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -36,63 +37,11 @@ public final class CommandStaffHide extends Command {
                     String color = ChatColor.translateAlternateColorCodes('&', messageFormat);
                     sendMessage(sender, color);
                 } else {
-                    togglePlayerVisibility(target, player);
+                    plugin.getStaffManager().setPlayerVisibility(target, player, !plugin.getFromDataStorage().getBoolean(target.getUUID()));
                 }
-            } else togglePlayerVisibility(player);
+            } else plugin.getStaffManager().setPlayerVisibility(player, !plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString()));
         }
 
-    }
-
-    public void togglePlayerVisibility(ProxiedPlayer player) {
-        boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString(), false);
-        String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
-                plugin.getFromConfig().getString("staffhide.toggle"));
-        if(!playerHideState) {
-            plugin.getFromDataStorage().set(player.getUniqueId().toString(), true);
-            sendMessage(player, playerHideToggledMsg.replace("{state}",
-                    ChatColor.translateAlternateColorCodes('&',
-                            plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
-            plugin.saveConfig("data.yml");
-        } else {
-            plugin.getFromDataStorage().set(player.getUniqueId().toString(), false);
-            sendMessage(player, playerHideToggledMsg.replace("{state}",
-                    ChatColor.translateAlternateColorCodes('&',
-                            plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
-
-            plugin.saveConfig("data.yml");
-        }
-    }
-
-    public void togglePlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender) {
-        if(target == sender) togglePlayerVisibility(sender);
-        else {
-            boolean playerHideState = plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString(), false);
-            String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
-                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
-            String otherPlayerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
-                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
-            if(!playerHideState) {
-                plugin.getFromDataStorage().set(target.getUniqueId().toString(), true);
-                sendMessage(target, playerHideToggledMsg.replace("{state}",
-                        ChatColor.translateAlternateColorCodes('&',
-                                plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
-                sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
-                        ChatColor.translateAlternateColorCodes('&',
-                                plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
-
-                plugin.saveConfig("data.yml");
-            } else {
-                plugin.getFromDataStorage().set(target.getUniqueId().toString(), false);
-                sendMessage(target, playerHideToggledMsg.replace("{state}",
-                        ChatColor.translateAlternateColorCodes('&',
-                                plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
-                sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
-                        ChatColor.translateAlternateColorCodes('&',
-                                plugin.getFromConfig().getString("staffhide.disabled-placeholder"))));
-
-                plugin.saveConfig("data.yml");
-            }
-        }
     }
 
     private void sendMessage(CommandSender sender, String messageString) {

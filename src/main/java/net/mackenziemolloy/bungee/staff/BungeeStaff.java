@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import net.luckperms.api.LuckPerms;
 import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
+import net.mackenziemolloy.bungee.staff.listeners.PremiumVanishUpdate;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -23,6 +24,7 @@ import net.md_5.bungee.config.Configuration;
 import net.mackenziemolloy.bungee.staff.command.CommandList;
 import net.mackenziemolloy.bungee.staff.command.CommandStaffHide;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
+import org.bstats.bungeecord.Metrics;
 
 public final class BungeeStaff extends Plugin {
     private final StaffManager staffManager;
@@ -41,12 +43,18 @@ public final class BungeeStaff extends Plugin {
     
     @Override
     public void onEnable() {
+        int pluginId = 13319;
+        Metrics metrics = new Metrics(this, pluginId);
+
         reloadConfig("config.yml");
         reloadConfig("data.yml");
         
         ProxyServer proxy = getProxy();
         PluginManager pluginManager = proxy.getPluginManager();
         pluginManager.registerCommand(this, new CommandList(this));
+        pluginManager.registerCommand(this, new CommandStaffHide(this));
+
+        pluginManager.registerListener(this, new PremiumVanishUpdate(this));
         
         Logger logger = getLogger();
         logger.info("Loaded successfully, enjoy!");

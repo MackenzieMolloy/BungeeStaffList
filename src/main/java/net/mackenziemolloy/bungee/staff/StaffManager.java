@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Objects;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
@@ -75,5 +78,45 @@ public final class StaffManager {
     private ProxyServer getProxy() {
         BungeeStaff plugin = getPlugin();
         return plugin.getProxy();
+    }
+
+    public void setPlayerVisibility(ProxiedPlayer player, boolean state) {
+        boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString());
+        ProxyServer.getInstance().broadcast("change");
+        if(playerHideState == state) return;
+
+        String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+                plugin.getFromConfig().getString("staffhide.toggle"));
+
+        plugin.getFromDataStorage().set(player.getUniqueId().toString(), state);
+        sendMessage(player, playerHideToggledMsg.replace("{state}",
+            ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+        plugin.saveConfig("data.yml");
+    }
+
+    public void setPlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender, boolean state) {
+        if(target == sender) setPlayerVisibility(sender, state);
+        else {
+            boolean playerHideState = plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString(), false);
+            if(playerHideState == state) return;
+
+            String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
+            String otherPlayerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
+
+            plugin.getFromDataStorage().set(target.getUniqueId().toString(), state);
+            sendMessage(target, playerHideToggledMsg.replace("{state}",
+                    ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+            sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
+                    ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+            plugin.saveConfig("data.yml");
+
+        }
+    }
+
+    private void sendMessage(CommandSender sender, String messageString) {
+        BaseComponent[] message = TextComponent.fromLegacyText(messageString);
+        sender.sendMessage(message);
     }
 }

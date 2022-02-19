@@ -115,8 +115,7 @@ public final class StaffMember implements Comparable<StaffMember> {
                     highestGroup = i;
             }
         }
-        
-        ProxyServer.getInstance().getLogger().info(String.valueOf(rankKeys.size()));
+
         return (rankKeys.size() == 0 ? ranks : ranks.getSection(rankKeys.get(highestGroup)));
     }
     
