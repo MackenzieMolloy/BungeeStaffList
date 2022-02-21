@@ -3,6 +3,8 @@ package net.mackenziemolloy.bungee.staff.command;
 import java.util.List;
 import java.util.Objects;
 
+import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
+import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -72,7 +74,23 @@ public final class CommandList extends Command {
         sender.sendMessage(message);
 
         if(!plugin.getFromConfig().getBoolean("notice-understood")) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cNotice: If you are using LuckPerms, or PremiumVanish and are wondering why rank prefixes/ordering isn't showing correctly - similarly with being in vanish... you need to enable the hooks in the &nconfig.yml&c.\n&cAdditionally, to hide this message &nset notice-understood to true &cat the &nbottom of the config.yml&c."));
+
+            Boolean notified = false;
+
+            LuckPermsHook luckPermsHook = new LuckPermsHook(plugin);
+            if(luckPermsHook.isEnabled() && !plugin.getFromConfig().getBoolean("hooks.luckperms")) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lHEY! &7It appears you are running &eLuckPerms&7, for ranks from the plugin to be displayed in the stafflist - please enable the hook in the &f&nconfig.yml&7."));
+                notified = true;
+            }
+
+            PremiumVanishHook premiumVanishHook = new PremiumVanishHook(plugin);
+            if(premiumVanishHook.isEnabled() && !plugin.getFromConfig().getBoolean("hooks.premiumvanish")) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lHEY! &7It appears you are running &ePremiumVanish&7, for vanished players to be automatically hidden from stafflist - please enable the hook in the &f&nconfig.yml&7."));
+                notified = true;
+            }
+
+            if(notified) sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7\n&cTo hide the above hook messages, set &7understood-notices&c to true or enable the hook in the config.yml.&7"));
+
         }
     }
 }

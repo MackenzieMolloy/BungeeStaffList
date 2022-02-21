@@ -82,15 +82,16 @@ public final class StaffManager {
 
     public void setPlayerVisibility(ProxiedPlayer player, boolean state) {
         boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString());
-        ProxyServer.getInstance().broadcast("change");
         if(playerHideState == state) return;
 
         String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
                 plugin.getFromConfig().getString("staffhide.toggle"));
 
+        String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
+
         plugin.getFromDataStorage().set(player.getUniqueId().toString(), state);
         sendMessage(player, playerHideToggledMsg.replace("{state}",
-            ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+            ChatColor.translateAlternateColorCodes('&', newStateString)));
         plugin.saveConfig("data.yml");
     }
 
@@ -105,11 +106,13 @@ public final class StaffManager {
             String otherPlayerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
                     plugin.getFromConfig().getString("staffhide.toggle-by-other"));
 
+            String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
+
             plugin.getFromDataStorage().set(target.getUniqueId().toString(), state);
             sendMessage(target, playerHideToggledMsg.replace("{state}",
-                    ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+                    ChatColor.translateAlternateColorCodes('&', newStateString)));
             sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
-                    ChatColor.translateAlternateColorCodes('&', plugin.getFromConfig().getString("staffhide.enabled-placeholder"))));
+                    ChatColor.translateAlternateColorCodes('&', newStateString)));
             plugin.saveConfig("data.yml");
 
         }
