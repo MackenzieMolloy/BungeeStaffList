@@ -119,6 +119,7 @@ public final class StaffManager {
     }
 
     private void sendMessage(CommandSender sender, String messageString) {
+        if(messageString.isEmpty()) return;
         BaseComponent[] message = TextComponent.fromLegacyText(messageString);
         sender.sendMessage(message);
     }

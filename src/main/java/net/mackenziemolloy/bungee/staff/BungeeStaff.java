@@ -1,3 +1,13 @@
+/*
+
+    TO-DO
+    - Unregister and re-register PremiumVanish hook on config reload
+    - Test staff hiding others
+    - Clean-up code
+
+ */
+
+
 package net.mackenziemolloy.bungee.staff;
 
 import java.io.File;
@@ -13,10 +23,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.luckperms.api.LuckPerms;
 import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
+import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
 import net.mackenziemolloy.bungee.staff.listeners.PremiumVanishUpdate;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
@@ -43,6 +58,8 @@ public final class BungeeStaff extends Plugin {
     
     @Override
     public void onEnable() {
+        Logger logger = getLogger();
+
         int pluginId = 13319;
         Metrics metrics = new Metrics(this, pluginId);
 
@@ -54,9 +71,28 @@ public final class BungeeStaff extends Plugin {
         pluginManager.registerCommand(this, new CommandList(this));
         pluginManager.registerCommand(this, new CommandStaffHide(this));
 
-        pluginManager.registerListener(this, new PremiumVanishUpdate(this));
-        
-        Logger logger = getLogger();
+        if(getFromConfig().getBoolean("hooks.premiumvanish")) {
+            PremiumVanishHook premiumVanishHook = new PremiumVanishHook(this);
+            if(premiumVanishHook.isEnabled()) {
+                pluginManager.registerListener(this, new PremiumVanishUpdate(this));
+            }
+            else {
+                logger.log(Level.SEVERE, "You have the PremiumVanish hook enabled, but the plugin wasn't detected so the hook wasn't enabled.");
+
+            }
+        }
+
+        if(getFromConfig().getBoolean("hooks.luckperms")) {
+            LuckPermsHook luckPermsHook = new LuckPermsHook(this);
+            if(luckPermsHook.isEnabled()) {
+                //pluginManager.registerListener(this, new PremiumVanishUpdate(this));
+            }
+            else {
+                logger.log(Level.SEVERE, "You have the LuckPerms hook enabled, but the plugin wasn't detected so the hook wasn't enabled.");
+
+            }
+        }
+
         logger.info("Loaded successfully, enjoy!");
     }
     
@@ -74,6 +110,10 @@ public final class BungeeStaff extends Plugin {
     
     public void reloadConfig() {
         reloadConfig("config.yml");
+    }
+
+    public void reloadConfig(ProxiedPlayer player) {
+        reloadConfig("config.yml", player);
     }
     
     public CommentedConfiguration getDataStorage() {
@@ -162,6 +202,42 @@ public final class BungeeStaff extends Plugin {
         }
 
     }
+
+    private void reloadConfig(String configName, ProxiedPlayer player) {
+        try {
+            File dataFolder = getDataFolder();
+            File configFile = new File(dataFolder, configName);
+            if(!configFile.exists()) {
+                Logger logger = getLogger();
+                logger.info(configName + " does not exist, loading as empty configuration.");
+
+                CommentedConfiguration emptyConfig = new CommentedConfiguration();
+                emptyConfig.loadFromString("");
+
+                this.configurationMap.put(configName, emptyConfig);
+            }
+
+            InputStream jarConfigStream = getResourceAsStream(configName);
+            CommentedConfiguration configuration = CommentedConfiguration.loadConfiguration(configFile);
+            configuration.syncWithConfig(configFile, jarConfigStream);
+
+            this.configurationMap.put(configName, configuration);
+            sendMessage(player, getFromConfig().getString("config-reloaded"));
+
+        } catch(IOException ex) {
+
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cAn error has occurred whilst reloading the config, please check console."));
+            Logger logger = getLogger();
+            logger.log(Level.WARNING, "An error occurred while reloading '" + configName
+                    + "', using an empty config.", ex);
+
+            CommentedConfiguration emptyConfig = new CommentedConfiguration();
+            emptyConfig.loadFromString("");
+
+            this.configurationMap.put(configName, emptyConfig);
+        }
+
+    }
     
     public void saveConfig(String configName) {
         try {
@@ -178,5 +254,11 @@ public final class BungeeStaff extends Plugin {
             Logger logger = getLogger();
             logger.log(Level.WARNING, "An error occurred while saving a configuration file:", ex);
         }
+    }
+
+    private void sendMessage(CommandSender sender, String messageString) {
+        if(messageString.isEmpty()) return;
+        BaseComponent[] message = TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', messageString));
+        sender.sendMessage(message);
     }
 }
