@@ -102,9 +102,9 @@ public final class StaffManager {
             if(playerHideState == state) return;
 
             String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
-                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
+                    plugin.getFromConfig().getString("staffhide.toggled-by-other").replace("{other}", sender.getDisplayName()));
             String otherPlayerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
-                    plugin.getFromConfig().getString("staffhide.toggle-by-other"));
+                    plugin.getFromConfig().getString("staffhide.toggle-other").replace("{other}", target.getDisplayName()));
 
             String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
 

@@ -37,7 +37,7 @@ public final class CommandStaffHide extends Command {
                     String color = ChatColor.translateAlternateColorCodes('&', messageFormat);
                     sendMessage(sender, color);
                 } else {
-                    plugin.getStaffManager().setPlayerVisibility(target, player, !plugin.getFromDataStorage().getBoolean(target.getUUID()));
+                    plugin.getStaffManager().setPlayerVisibility(target, player, !plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString()));
                 }
             } else plugin.getStaffManager().setPlayerVisibility(player, !plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString()));
         }
