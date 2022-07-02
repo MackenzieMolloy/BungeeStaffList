@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -67,7 +68,7 @@ public final class StaffManager {
             lineList.add(staffMemberMsg);
         }
         
-        return ChatColor.translateAlternateColorCodes('&', this.plugin.getFromConfig()
+        return MessageUtility.color(this.plugin.getFromConfig()
                 .getString("stafflist-online").replace("{staff}", String.join("\n", lineList)));
     }
     
@@ -84,14 +85,14 @@ public final class StaffManager {
         boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString());
         if(playerHideState == state) return;
 
-        String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+        String playerHideToggledMsg = MessageUtility.color(
                 plugin.getFromConfig().getString("staffhide.toggle"));
 
         String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
 
         plugin.getFromDataStorage().set(player.getUniqueId().toString(), state);
         sendMessage(player, playerHideToggledMsg.replace("{state}",
-            ChatColor.translateAlternateColorCodes('&', newStateString)));
+                MessageUtility.color(newStateString)));
         plugin.saveConfig("data.yml");
     }
 
@@ -101,18 +102,18 @@ public final class StaffManager {
             boolean playerHideState = plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString(), false);
             if(playerHideState == state) return;
 
-            String playerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+            String playerHideToggledMsg = MessageUtility.color(
                     plugin.getFromConfig().getString("staffhide.toggled-by-other").replace("{other}", sender.getDisplayName()));
-            String otherPlayerHideToggledMsg = ChatColor.translateAlternateColorCodes('&',
+            String otherPlayerHideToggledMsg = MessageUtility.color(
                     plugin.getFromConfig().getString("staffhide.toggle-other").replace("{other}", target.getDisplayName()));
 
             String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
 
             plugin.getFromDataStorage().set(target.getUniqueId().toString(), state);
             sendMessage(target, playerHideToggledMsg.replace("{state}",
-                    ChatColor.translateAlternateColorCodes('&', newStateString)));
+                    MessageUtility.color(newStateString)));
             sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
-                    ChatColor.translateAlternateColorCodes('&', newStateString)));
+                    MessageUtility.color(newStateString)));
             plugin.saveConfig("data.yml");
 
         }

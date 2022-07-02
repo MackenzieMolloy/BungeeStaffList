@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
+import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -58,7 +59,7 @@ public final class CommandList extends Command {
             return;
         }
 
-        String color = ChatColor.translateAlternateColorCodes('&', messageFormat);
+        String color = MessageUtility.color(messageFormat);
         BaseComponent[] message = TextComponent.fromLegacyText(color);
         sender.sendMessage(message);
     }
@@ -68,7 +69,7 @@ public final class CommandList extends Command {
         List<StaffMember> staffList = staffManager.getOnlineStaff(false);
 
         String processStaffList = staffManager.processStaffList(staffList);
-        String messageFormat = ChatColor.translateAlternateColorCodes('&', processStaffList);
+        String messageFormat = MessageUtility.color(processStaffList);
 
         BaseComponent[] message = TextComponent.fromLegacyText(messageFormat);
         sender.sendMessage(message);
@@ -79,17 +80,17 @@ public final class CommandList extends Command {
 
             LuckPermsHook luckPermsHook = new LuckPermsHook(plugin);
             if(luckPermsHook.isEnabled() && !plugin.getFromConfig().getBoolean("hooks.luckperms")) {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lHEY! &7It appears you are running &eLuckPerms&7, for ranks from the plugin to be displayed in the stafflist - please enable the hook in the &f&nconfig.yml&7."));
+                sender.sendMessage(MessageUtility.color("&c&lHEY! &7It appears you are running &eLuckPerms&7, for ranks from the plugin to be displayed in the stafflist - please enable the hook in the &f&nconfig.yml&7."));
                 notified = true;
             }
 
             PremiumVanishHook premiumVanishHook = new PremiumVanishHook(plugin);
             if(premiumVanishHook.isEnabled() && !plugin.getFromConfig().getBoolean("hooks.premiumvanish")) {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lHEY! &7It appears you are running &ePremiumVanish&7, for vanished players to be automatically hidden from stafflist - please enable the hook in the &f&nconfig.yml&7."));
+                sender.sendMessage(MessageUtility.color("&c&lHEY! &7It appears you are running &ePremiumVanish&7, for vanished players to be automatically hidden from stafflist - please enable the hook in the &f&nconfig.yml&7."));
                 notified = true;
             }
 
-            if(notified) sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7\n&cTo hide the above hook messages, set &7understood-notices&c to true or enable the hook in the config.yml.&7"));
+            if(notified) sender.sendMessage(MessageUtility.color("&7\n&cTo hide the above hook messages, set &7understood-notices&c to true or enable the hook in the config.yml.&7"));
 
         }
     }
