@@ -1,13 +1,14 @@
 package net.mackenziemolloy.bungee.staff.command;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+
+import com.github.sirblobman.api.utility.Validate;
 
 import net.mackenziemolloy.bungee.staff.BungeeStaff;
 import net.mackenziemolloy.bungee.staff.StaffManager;
@@ -18,7 +19,7 @@ public final class CommandList extends Command {
 
     public CommandList(BungeeStaff plugin) {
         super("bungeestaff", "", "staff", "stafflist", "liststaff");
-        this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
+        this.plugin = Validate.notNull(plugin, "plugin must not be null!");
     }
 
     @Override

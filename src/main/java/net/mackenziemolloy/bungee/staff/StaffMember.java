@@ -2,7 +2,6 @@ package net.mackenziemolloy.bungee.staff;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -11,6 +10,7 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.config.Configuration;
 
 import com.github.sirblobman.api.bungeecord.luckperms.LuckPermsHook;
+import com.github.sirblobman.api.utility.Validate;
 
 import de.myzelyam.api.vanish.BungeeVanishAPI;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
@@ -28,8 +28,8 @@ public final class StaffMember implements Comparable<StaffMember> {
     private transient Integer groupWeight;
 
     public StaffMember(BungeeStaff plugin, ProxiedPlayer player) {
-        this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
-        Objects.requireNonNull(player, "player must not be null!");
+        this.plugin = Validate.notNull(plugin, "plugin must not be null!");
+        Validate.notNull(player, "player must not be null!");
 
         this.playerId = player.getUniqueId();
         this.username = player.getName();
