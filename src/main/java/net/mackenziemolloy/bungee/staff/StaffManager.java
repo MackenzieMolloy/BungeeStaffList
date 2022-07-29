@@ -11,29 +11,29 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
-public final class StaffManager{
+public final class StaffManager {
     private final BungeeStaff plugin;
-    
+
     public StaffManager(BungeeStaff plugin) {
         this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
     }
-    
+
     public List<StaffMember> getOnlineStaff(boolean includeVanished) {
         ProxyServer proxy = getProxy();
         Collection<ProxiedPlayer> playerCollection = proxy.getPlayers();
         List<StaffMember> staffList = new ArrayList<>();
-        
-        for(ProxiedPlayer player : playerCollection) {
-            if(!player.hasPermission("stafflist.staff")) {
+
+        for (ProxiedPlayer player : playerCollection) {
+            if (!player.hasPermission("stafflist.staff")) {
                 continue;
             }
-            
+
             StaffMember staffMember = new StaffMember(this.plugin, player);
-            if(includeVanished || !staffMember.isHidden()) {
+            if (includeVanished || !staffMember.isHidden()) {
                 staffList.add(staffMember);
             }
         }
-    
+
         Collections.sort(staffList);
         return staffList;
     }
@@ -42,36 +42,43 @@ public final class StaffManager{
         BungeeStaff plugin = getPlugin();
         Configuration configuration = plugin.getConfig().getConfiguration();
         Configuration configuredAliases = configuration.getSection("server-aliases");
-        
-        if(configuredAliases.getKeys().contains(serverName)) {
+
+        if (configuredAliases.getKeys().contains(serverName)) {
             return configuredAliases.getString(serverName);
         }
-        
+
         return serverName;
     }
 
     public String processStaffList(List<StaffMember> staffList) {
-        if(staffList.isEmpty()) {
-            return this.plugin.getConfig().getConfiguration().getString("stafflist-none");
+        BungeeStaff plugin = getPlugin();
+        if (staffList.isEmpty()) {
+            return plugin.getMessage("stafflist-none");
         }
-        
+
         List<String> lineList = new ArrayList<>();
-        for(StaffMember staffMember : staffList) {
-            String staffMemberMsg = this.plugin.getConfig().getConfiguration().getString("staff-format")
-                    .replace("{prefix}", staffMember.getPrefix())
-                    .replace("{username}", staffMember.getUsername())
-                    .replace("{server}", staffMember.getServer());
-            lineList.add(staffMemberMsg);
+        for (StaffMember staffMember : staffList) {
+            String prefix = staffMember.getPrefix();
+            String username = staffMember.getUsername();
+            String server = staffMember.getServer();
+
+            String lineFormat = plugin.getMessage("staff-format");
+            String line = lineFormat.replace("{prefix}", prefix)
+                    .replace("{username}", username)
+                    .replace("{server}", server);
+            lineList.add(line);
         }
-        
-        return ChatColor.translateAlternateColorCodes('&', this.plugin.getConfig().getConfiguration()
-                .getString("stafflist-online").replace("{staff}", String.join("\n", lineList)));
+
+        String staff = String.join("\n", lineList);
+        String messageFormat = plugin.getMessage("stafflist-online");
+        String message = messageFormat.replace("{staff}", staff);
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
-    
+
     private BungeeStaff getPlugin() {
         return this.plugin;
     }
-    
+
     private ProxyServer getProxy() {
         BungeeStaff plugin = getPlugin();
         return plugin.getProxy();
