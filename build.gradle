@@ -3,23 +3,38 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
+sourceCompatibility = JavaVersion.VERSION_17
 group 'net.mackenziemolloy.StaffList'
 version '1.0'
-sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
-    mavenLocal()
     mavenCentral()
 
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url = 'https://jitpack.io/' }
+    maven {
+        name = 'sonatype-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
 
+    maven {
+        name = 'sirblobman-public'
+        url = 'https://nexus.sirblobman.xyz/repository/public/'
+    }
+
+    maven {
+        name = 'jitpack.io'
+        url = 'https://jitpack.io/'
+    }
+
+    mavenLocal()
 }
 
 dependencies {
+    // Shaded Dependencies
+    implementation "com.github.sirblobman.api.bungeecord:luckperms-helper:2.4-SNAPSHOT"
+
+    // Other Dependencies
     compileOnly 'org.jetbrains:annotations:23.0.0'
     compileOnly "net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT"
-    compileOnly 'net.luckperms:api:5.4'
     compileOnly "com.github.LeonMangler:PremiumVanishAPI:2.7.3"
 }
 

@@ -10,8 +10,9 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.config.Configuration;
 
+import com.github.sirblobman.api.bungeecord.luckperms.LuckPermsHook;
+
 import de.myzelyam.api.vanish.BungeeVanishAPI;
-import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,7 +104,7 @@ public final class StaffMember implements Comparable<StaffMember> {
         LuckPermsHook luckPermsHook = plugin.getLuckPermsHook();
         if (luckPermsHook != null) {
             UUID playerId = getPlayerId();
-            return (this.groupWeight = luckPermsHook.getWeight(playerId, this.groupWeight));
+            return (this.groupWeight = luckPermsHook.getWeight(playerId, 0));
         }
 
         ProxiedPlayer player = getProxiedPlayer();

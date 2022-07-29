@@ -16,13 +16,15 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 
+import com.github.sirblobman.api.bungeecord.luckperms.ILuckPermsHookPlugin;
+import com.github.sirblobman.api.bungeecord.luckperms.LuckPermsHook;
+
 import net.mackenziemolloy.bungee.staff.command.CommandList;
-import net.mackenziemolloy.bungee.staff.hooks.LuckPermsHook;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class BungeeStaff extends Plugin {
+public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
     private final StaffManager staffManager;
 
     private CommentedConfiguration configuration;
@@ -53,6 +55,20 @@ public final class BungeeStaff extends Plugin {
         logger.info("Loaded successfully, enjoy!");
     }
 
+    @Override
+    public void setupLuckPermsHook() {
+        CommentedConfiguration config = getConfig();
+        Configuration configuration = config.getConfiguration();
+        if (configuration.getBoolean("hooks.luckperms")) {
+            this.luckPermsHook = new LuckPermsHook(this);
+            if (this.luckPermsHook.isDisabled()) {
+                this.luckPermsHook = null;
+            }
+        } else {
+            this.luckPermsHook = null;
+        }
+    }
+
     public void syncConfig() {
         try {
             File dataFolder = getDataFolder();
@@ -72,19 +88,6 @@ public final class BungeeStaff extends Plugin {
         this.configuration = CommentedConfiguration.loadConfiguration(configFile);
 
         setupLuckPermsHook();
-    }
-
-    private void setupLuckPermsHook() {
-        CommentedConfiguration config = getConfig();
-        Configuration configuration = config.getConfiguration();
-        if (configuration.getBoolean("hooks.luckperms")) {
-            this.luckPermsHook = new LuckPermsHook(this);
-            if (!this.luckPermsHook.isEnabled()) {
-                this.luckPermsHook = null;
-            }
-        } else {
-            this.luckPermsHook = null;
-        }
     }
 
     public StaffManager getStaffManager() {
