@@ -1,4 +1,5 @@
 package net.mackenziemolloy.bungee.staff.hooks;
 
-public class PremiumVanishHook {
+public final class PremiumVanishHook {
+    // TODO ?
 }
