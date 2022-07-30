@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 
 public final class MessageUtility {
     /**
@@ -20,7 +20,7 @@ public final class MessageUtility {
         }
 
         String messageReplaced = HexColorUtility.replaceHexColors('&', message);
-        return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', messageReplaced);
+        return ChatColor.translateAlternateColorCodes('&', messageReplaced);
     }
 
     /**
@@ -64,4 +64,3 @@ public final class MessageUtility {
         return colorList(messageList);
     }
 }
-

@@ -41,6 +41,7 @@ dependencies {
 
 
 shadowJar {
+    relocate "com.github.sirblobman.api.bungeecord", "net.mackenziemolloy.bungee.staff.luckperms"
     relocate "org.bstats", "net.mackenziemolloy.bungee.staff.bstats"
     minimize()
 }

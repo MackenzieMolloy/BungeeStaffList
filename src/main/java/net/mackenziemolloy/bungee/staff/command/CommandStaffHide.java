@@ -2,7 +2,6 @@ package net.mackenziemolloy.bungee.staff.command;
 
 import java.util.Objects;
 
-import net.mackenziemolloy.bungee.staff.StaffManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -23,9 +22,7 @@ public final class CommandStaffHide extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(sender instanceof ProxiedPlayer) {
-            ProxiedPlayer player = (ProxiedPlayer) sender;
-
+        if(sender instanceof ProxiedPlayer player) {
             String noPermissionFormat = plugin.getConfig().getConfiguration().getString("no-permission");
             String noPermission = ChatColor.translateAlternateColorCodes('&', noPermissionFormat);
             if(!sender.hasPermission("stafflist.staff")) {

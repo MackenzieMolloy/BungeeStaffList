@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -11,6 +12,9 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
 import com.github.sirblobman.api.utility.Validate;
+
+import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
+import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 
 public final class StaffManager {
     private final BungeeStaff plugin;
@@ -51,14 +55,15 @@ public final class StaffManager {
         return serverName;
     }
 
-    public String processStaffList(List<StaffMember> staffList) {
+    public String processStaffList(List<StaffMember> normalStaffList) {
         BungeeStaff plugin = getPlugin();
-        if (staffList.isEmpty()) {
+        List<StaffMember> nonHiddenStaffList = normalStaffList.stream().filter(this::canShowInStaffList).toList();
+        if (nonHiddenStaffList.isEmpty()) {
             return plugin.getMessage("stafflist-none");
         }
 
         List<String> lineList = new ArrayList<>();
-        for (StaffMember staffMember : staffList) {
+        for (StaffMember staffMember : nonHiddenStaffList) {
             String prefix = staffMember.getPrefix();
             String username = staffMember.getUsername();
             String server = staffMember.getServer();
@@ -83,5 +88,56 @@ public final class StaffManager {
     private ProxyServer getProxy() {
         BungeeStaff plugin = getPlugin();
         return plugin.getProxy();
+    }
+
+    public boolean canShowInStaffList(StaffMember player) {
+        BungeeStaff plugin = getPlugin();
+        PremiumVanishHook premiumVanishHook = plugin.getPremiumVanishHook();
+        Configuration dataStorage = plugin.getFromDataStorage();
+
+        UUID playerId = player.getPlayerId();
+        String playerIdString = playerId.toString();
+        boolean hidePlayer = dataStorage.getBoolean(playerIdString, false);
+        boolean isVanished = (premiumVanishHook != null && premiumVanishHook.isHidden(playerId));
+        return (!isVanished && !hidePlayer);
+    }
+
+    public void setPlayerVisibility(ProxiedPlayer player, boolean state) {
+        boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString());
+        if(playerHideState == state) return;
+
+        String playerHideToggledMsg = MessageUtility.color(
+                plugin.getFromConfig().getString("staffhide.toggle"));
+
+        String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder") :
+                plugin.getFromConfig().getString("staffhide.disabled-placeholder");
+
+        plugin.getFromDataStorage().set(player.getUniqueId().toString(), state);
+        plugin.sendMessage(player, playerHideToggledMsg.replace("{state}",
+                MessageUtility.color(newStateString)));
+        plugin.saveConfig("data.yml");
+    }
+
+    public void setPlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender, boolean state) {
+        if(target == sender) setPlayerVisibility(sender, state);
+        else {
+            boolean playerHideState = plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString(), false);
+            if(playerHideState == state) return;
+
+            String playerHideToggledMsg = MessageUtility.color(
+                    plugin.getFromConfig().getString("staffhide.toggled-by-other").replace("{other}", sender.getDisplayName()));
+            String otherPlayerHideToggledMsg = MessageUtility.color(
+                    plugin.getFromConfig().getString("staffhide.toggle-other").replace("{other}", target.getDisplayName()));
+
+            String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
+
+            plugin.getFromDataStorage().set(target.getUniqueId().toString(), state);
+            plugin.sendMessage(target, playerHideToggledMsg.replace("{state}",
+                    MessageUtility.color(newStateString)));
+            plugin.sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
+                    MessageUtility.color(newStateString)));
+            plugin.saveConfig("data.yml");
+
+        }
     }
 }
