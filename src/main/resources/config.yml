@@ -31,10 +31,6 @@ staffhide:
   toggle-other: "&b{other}&7 is now {state}&7 the staff list."
   toggled-by-other: "&b{other}&7 forced you to be {state}&7 the staff list."
 
-hooks:
-  premiumvanish: false
-  luckperms: false
-
 # This section is only applicable when no permissions plugin hook is enabled.
 # To apply a user to a group, simply give the permission "stafflist.ranks.<rank-name>" (for example, mod would be "stafflist.ranks.mod")
 # Note: The higher the weight, the higher up in the list the group will be.

@@ -30,18 +30,18 @@ repositories {
 
 dependencies {
     // Shaded Dependencies
-    implementation "com.github.sirblobman.api.bungeecord:luckperms-helper:2.4-SNAPSHOT"
-    implementation 'org.bstats:bstats-bungeecord:2.2.1'
+    implementation 'org.bstats:bstats-bungeecord:3.0.0'
 
     // Other Dependencies
     compileOnly 'org.jetbrains:annotations:23.0.0'
     compileOnly "net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT"
-    compileOnly "com.github.LeonMangler:PremiumVanishAPI:2.7.3"
+    compileOnly "com.github.sirblobman.api.bungeecord:core-bungee:2.4-SNAPSHOT"
+    compileOnly "com.github.LeonMangler:PremiumVanishAPI:2.7.11-2"
 }
 
 
 shadowJar {
-    relocate "com.github.sirblobman.api.bungeecord", "net.mackenziemolloy.bungee.staff.luckperms"
+    relocate "com.github.sirblobman.api", "net.mackenziemolloy.bungee.staff.sbcore"
     relocate "org.bstats", "net.mackenziemolloy.bungee.staff.bstats"
     minimize()
 }

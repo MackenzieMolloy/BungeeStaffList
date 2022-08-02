@@ -1,19 +1,17 @@
 package net.mackenziemolloy.bungee.staff;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.api.plugin.PluginManager;
 
-import com.github.sirblobman.api.bungeecord.luckperms.LuckPermsHook;
+import com.github.sirblobman.api.bungeecord.core.CorePlugin;
+import com.github.sirblobman.api.bungeecord.hook.permission.IPermissionHook;
 import com.github.sirblobman.api.utility.Validate;
 
 import de.myzelyam.api.vanish.BungeeVanishAPI;
-import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,10 +41,12 @@ public final class StaffMember implements Comparable<StaffMember> {
         return this.plugin;
     }
 
-    private Configuration getConfiguration() {
+    private IPermissionHook getPermissionHook() {
         BungeeStaff plugin = getPlugin();
-        CommentedConfiguration config = plugin.getConfig();
-        return config.getConfiguration();
+        ProxyServer proxy = plugin.getProxy();
+        PluginManager pluginManager = proxy.getPluginManager();
+        CorePlugin corePlugin = (CorePlugin) pluginManager.getPlugin("SirBlobmanBungeeCore");
+        return corePlugin.getPermissionHook();
     }
 
     public UUID getPlayerId() {
@@ -82,17 +82,9 @@ public final class StaffMember implements Comparable<StaffMember> {
             return this.prefix;
         }
 
-        BungeeStaff plugin = getPlugin();
-        LuckPermsHook luckPermsHook = plugin.getLuckPermsHook();
-        if (luckPermsHook != null) {
-            UUID playerId = getPlayerId();
-            return (this.prefix = luckPermsHook.getPrefix(playerId));
-        }
-
-        ProxiedPlayer player = getProxiedPlayer();
-        Configuration group = getGroup(player);
-        String prefix = group.getString("prefix");
-        return (this.prefix = (prefix == null || prefix.isBlank() ? "" : prefix));
+        UUID playerId = getPlayerId();
+        IPermissionHook permissionHook = getPermissionHook();
+        return (this.prefix = permissionHook.getPrefix(playerId));
     }
 
     public int getGroupWeight() {
@@ -100,54 +92,9 @@ public final class StaffMember implements Comparable<StaffMember> {
             return this.groupWeight;
         }
 
-        BungeeStaff plugin = getPlugin();
-        LuckPermsHook luckPermsHook = plugin.getLuckPermsHook();
-        if (luckPermsHook != null) {
-            UUID playerId = getPlayerId();
-            return (this.groupWeight = luckPermsHook.getWeight(playerId, 0));
-        }
-
-        ProxiedPlayer player = getProxiedPlayer();
-        Configuration group = getGroup(player);
-        return (this.groupWeight = group.getInt("weight", 0));
-    }
-
-    public Configuration getGroup(ProxiedPlayer player) {
-        Configuration configuration = getConfiguration();
-        Configuration sectionRanks = configuration.getSection("ranks");
-        List<String> rankKeys = new ArrayList<>(sectionRanks.getKeys());
-
-        int rankKeysSize = rankKeys.size();
-        if (rankKeysSize <= 0) {
-            return sectionRanks;
-        }
-
-        String highestRank = null;
-        int highestWeight = Integer.MIN_VALUE;
-        for (String rank : rankKeys) {
-            String permissionName = ("stafflist.rank." + rank);
-            if (!player.hasPermission(permissionName)) {
-                continue;
-            }
-
-            String weightPath = (rank + ".weight");
-            if (!sectionRanks.contains(weightPath)) {
-                continue;
-            }
-
-            int weight = sectionRanks.getInt(weightPath);
-            if (weight > highestWeight) {
-                highestWeight = weight;
-                highestRank = rank;
-            }
-        }
-
-        if (highestRank == null) {
-            return sectionRanks;
-        }
-
-        Configuration section = sectionRanks.getSection(highestRank);
-        return (section == null ? sectionRanks : section);
+        UUID playerId = getPlayerId();
+        IPermissionHook permissionHook = getPermissionHook();
+        return (this.groupWeight = permissionHook.getPrimaryGroupWeight(playerId, 0));
     }
 
     @NotNull

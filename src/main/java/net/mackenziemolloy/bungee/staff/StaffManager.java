@@ -9,11 +9,13 @@ import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 
+import com.github.sirblobman.api.bungeecord.core.CorePlugin;
+import com.github.sirblobman.api.bungeecord.hook.vanish.IVanishHook;
 import com.github.sirblobman.api.utility.Validate;
 
-import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
 import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 
 public final class StaffManager {
@@ -66,11 +68,13 @@ public final class StaffManager {
         for (StaffMember staffMember : nonHiddenStaffList) {
             String prefix = staffMember.getPrefix();
             String username = staffMember.getUsername();
+            String displayName = staffMember.getDisplayName();
             String server = staffMember.getServer();
 
             String lineFormat = plugin.getMessage("staff-format");
             String line = lineFormat.replace("{prefix}", prefix)
                     .replace("{username}", username)
+                    .replace("{display_name}", displayName)
                     .replace("{server}", server);
             lineList.add(line);
         }
@@ -90,15 +94,22 @@ public final class StaffManager {
         return plugin.getProxy();
     }
 
+    private IVanishHook getVanishHook() {
+        ProxyServer proxy = getProxy();
+        PluginManager pluginManager = proxy.getPluginManager();
+        CorePlugin corePlugin = (CorePlugin) pluginManager.getPlugin("SirBlobmanBungeeCore");
+        return corePlugin.getVanishHook();
+    }
+
     public boolean canShowInStaffList(StaffMember player) {
         BungeeStaff plugin = getPlugin();
-        PremiumVanishHook premiumVanishHook = plugin.getPremiumVanishHook();
+        IVanishHook vanishHook = getVanishHook();
         Configuration dataStorage = plugin.getFromDataStorage();
 
         UUID playerId = player.getPlayerId();
         String playerIdString = playerId.toString();
         boolean hidePlayer = dataStorage.getBoolean(playerIdString, false);
-        boolean isVanished = (premiumVanishHook != null && premiumVanishHook.isHidden(playerId));
+        boolean isVanished = vanishHook.isHidden(playerId);
         return (!isVanished && !hidePlayer);
     }
 

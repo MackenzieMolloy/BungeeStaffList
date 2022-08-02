@@ -9,7 +9,7 @@ import de.myzelyam.api.vanish.BungeePlayerShowEvent;
 import net.mackenziemolloy.bungee.staff.BungeeStaff;
 import net.mackenziemolloy.bungee.staff.StaffManager;
 
-public class PremiumVanishUpdate implements Listener {
+public final class PremiumVanishUpdate implements Listener {
     private final BungeeStaff plugin;
 
     public PremiumVanishUpdate(BungeeStaff plugin) {

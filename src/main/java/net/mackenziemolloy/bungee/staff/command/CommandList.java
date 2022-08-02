@@ -9,16 +9,16 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.config.Configuration;
 
 import com.github.sirblobman.api.bungeecord.luckperms.LuckPermsHook;
+import com.github.sirblobman.api.bungeecord.premiumvanish.PremiumVanishHook;
 import com.github.sirblobman.api.utility.Validate;
 
 import net.mackenziemolloy.bungee.staff.BungeeStaff;
 import net.mackenziemolloy.bungee.staff.StaffManager;
 import net.mackenziemolloy.bungee.staff.StaffMember;
-import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 
-public class CommandList extends Command {
+public final class CommandList extends Command {
     private final BungeeStaff plugin;
 
     public CommandList(BungeeStaff plugin) {

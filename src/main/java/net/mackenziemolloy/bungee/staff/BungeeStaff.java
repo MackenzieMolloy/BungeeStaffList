@@ -25,29 +25,23 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 
-import com.github.sirblobman.api.bungeecord.luckperms.ILuckPermsHookPlugin;
-import com.github.sirblobman.api.bungeecord.luckperms.LuckPermsHook;
+import com.github.sirblobman.api.bungeecord.core.CorePlugin;
+import com.github.sirblobman.api.bungeecord.hook.vanish.IVanishHook;
+import com.github.sirblobman.api.bungeecord.premiumvanish.PremiumVanishHook;
 
 import net.mackenziemolloy.bungee.staff.command.CommandList;
-import net.mackenziemolloy.bungee.staff.hooks.PremiumVanishHook;
+import net.mackenziemolloy.bungee.staff.listeners.PremiumVanishUpdate;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
+public final class BungeeStaff extends Plugin {
     private final StaffManager staffManager;
     private final Map<String, CommentedConfiguration> configurationMap;
-
-    private LuckPermsHook luckPermsHook;
-    private PremiumVanishHook premiumVanishHook;
 
     public BungeeStaff() {
         this.staffManager = new StaffManager(this);
         this.configurationMap = new HashMap<>();
-
-        this.luckPermsHook = null;
-        this.premiumVanishHook = null;
     }
 
     @Override
@@ -66,44 +60,12 @@ public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
 
         Logger logger = getLogger();
         logger.info("Loaded successfully, enjoy!");
-    }
 
-    @Override
-    public void setupLuckPermsHook() {
-        CommentedConfiguration config = getConfig();
-        Configuration configuration = config.getConfiguration();
-        if (configuration.getBoolean("hooks.luckperms")) {
-            this.luckPermsHook = new LuckPermsHook(this);
-            if (this.luckPermsHook.isDisabled()) {
-                this.luckPermsHook = null;
-            }
-        } else {
-            this.luckPermsHook = null;
+        CorePlugin corePlugin = (CorePlugin) pluginManager.getPlugin("SirBlobmanBungeeCore");
+        IVanishHook vanishHook = corePlugin.getVanishHook();
+        if(vanishHook instanceof PremiumVanishHook) {
+            pluginManager.registerListener(this, new PremiumVanishUpdate(this));
         }
-    }
-
-    public void setupPremiumVanishHook() {
-        CommentedConfiguration config = getConfig();
-        Configuration configuration = config.getConfiguration();
-        if (configuration.getBoolean("hooks.premiumvanish")) {
-            this.premiumVanishHook = new PremiumVanishHook(this);
-            if (this.premiumVanishHook.isDisabled()) {
-                this.premiumVanishHook = null;
-            }
-        } else {
-            this.premiumVanishHook = null;
-        }
-    }
-
-    @Nullable
-    @Override
-    public LuckPermsHook getLuckPermsHook() {
-        return this.luckPermsHook;
-    }
-
-    @Nullable
-    public PremiumVanishHook getPremiumVanishHook() {
-        return this.premiumVanishHook;
     }
 
     public void syncConfig() {
@@ -122,9 +84,6 @@ public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
     public void reloadConfig() {
         reloadConfig("config.yml");
         reloadConfig("data.yml");
-
-        setupLuckPermsHook();
-        setupPremiumVanishHook();
     }
 
     public StaffManager getStaffManager() {
@@ -175,7 +134,6 @@ public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
 
             this.configurationMap.put(configName, emptyConfig);
         }
-
     }
 
     private void reloadConfig(String configName, ProxiedPlayer player) {
@@ -276,10 +234,11 @@ public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
     public String getMessage(String path) {
         CommentedConfiguration config = getConfig();
         Configuration configuration = config.getConfiguration();
+        String missingPath = String.format(Locale.US, "{%s}", path);
 
         // If the config is missing the message, show the missing path.
         if (!configuration.contains(path)) {
-            return String.format(Locale.US, "{%s}", path);
+            return missingPath;
         }
 
         // Get the object at the config path.
@@ -302,7 +261,7 @@ public final class BungeeStaff extends Plugin implements ILuckPermsHookPlugin {
         }
 
         // If the object is not a string or a list, show it as a missing path.
-        return String.format(Locale.US, "{%s}", path);
+        return missingPath;
     }
 
     public void sendMessage(CommandSender sender, String messageString) {
