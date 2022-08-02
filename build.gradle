@@ -47,3 +47,4 @@ shadowJar {
 }
 
 tasks.build.dependsOn tasks.shadowJar
+jar.enabled = false;
