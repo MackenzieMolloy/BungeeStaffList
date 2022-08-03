@@ -34,6 +34,7 @@ import net.mackenziemolloy.bungee.staff.command.CommandStaffHide;
 import net.mackenziemolloy.bungee.staff.listeners.PremiumVanishUpdate;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
+import org.bstats.bungeecord.Metrics;
 import org.jetbrains.annotations.NotNull;
 
 public final class BungeeStaff extends Plugin {
@@ -68,6 +69,9 @@ public final class BungeeStaff extends Plugin {
         if(vanishHook instanceof PremiumVanishHook) {
             pluginManager.registerListener(this, new PremiumVanishUpdate(this));
         }
+
+        int pluginId = 13319;
+        new Metrics(this, pluginId);
     }
 
     public void syncConfig() {

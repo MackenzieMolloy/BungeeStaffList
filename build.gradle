@@ -42,7 +42,7 @@ dependencies {
 
 shadowJar {
     relocate "org.bstats", "net.mackenziemolloy.bungee.staff.bstats"
-    // minimize()
+    minimize()
 }
 
 tasks.build.dependsOn tasks.shadowJar
