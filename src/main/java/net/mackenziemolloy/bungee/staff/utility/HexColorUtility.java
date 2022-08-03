@@ -19,23 +19,23 @@ public final class HexColorUtility {
         Pattern pattern = getReplaceAllRgbPattern(colorChar);
         Matcher matcher = pattern.matcher(string);
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         while(matcher.find()) {
             if(matcher.group(1) != null) {
-                matcher.appendReplacement(buffer, colorChar + "#$2");
+                matcher.appendReplacement(builder, colorChar + "#$2");
                 continue;
             }
 
             try {
                 String hexCodeString = matcher.group(2);
                 String hexCode = parseHexColor(hexCodeString);
-                matcher.appendReplacement(buffer, hexCode);
+                matcher.appendReplacement(builder, hexCode);
             } catch(NumberFormatException ignored) {
             }
         }
 
-        matcher.appendTail(buffer);
-        return buffer.toString();
+        matcher.appendTail(builder);
+        return builder.toString();
     }
 
     private static Pattern getReplaceAllRgbPattern(char colorChar) {

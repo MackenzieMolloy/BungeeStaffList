@@ -16,8 +16,6 @@ import com.github.sirblobman.api.bungeecord.core.CorePlugin;
 import com.github.sirblobman.api.bungeecord.hook.vanish.IVanishHook;
 import com.github.sirblobman.api.utility.Validate;
 
-import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
-
 public final class StaffManager {
     private final BungeeStaff plugin;
 
@@ -94,61 +92,16 @@ public final class StaffManager {
         return plugin.getProxy();
     }
 
-    private IVanishHook getVanishHook() {
+    private IVanishHook getDefaultVanishHook() {
         ProxyServer proxy = getProxy();
         PluginManager pluginManager = proxy.getPluginManager();
         CorePlugin corePlugin = (CorePlugin) pluginManager.getPlugin("SirBlobmanBungeeCore");
-        return corePlugin.getVanishHook();
+        return corePlugin.getDefaultVanishHook();
     }
 
     public boolean canShowInStaffList(StaffMember player) {
-        BungeeStaff plugin = getPlugin();
-        IVanishHook vanishHook = getVanishHook();
-        Configuration dataStorage = plugin.getFromDataStorage();
-
+        IVanishHook vanishHook = getDefaultVanishHook();
         UUID playerId = player.getPlayerId();
-        String playerIdString = playerId.toString();
-        boolean hidePlayer = dataStorage.getBoolean(playerIdString, false);
-        boolean isVanished = vanishHook.isHidden(playerId);
-        return (!isVanished && !hidePlayer);
-    }
-
-    public void setPlayerVisibility(ProxiedPlayer player, boolean state) {
-        boolean playerHideState = plugin.getFromDataStorage().getBoolean(player.getUniqueId().toString());
-        if(playerHideState == state) return;
-
-        String playerHideToggledMsg = MessageUtility.color(
-                plugin.getFromConfig().getString("staffhide.toggle"));
-
-        String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder") :
-                plugin.getFromConfig().getString("staffhide.disabled-placeholder");
-
-        plugin.getFromDataStorage().set(player.getUniqueId().toString(), state);
-        plugin.sendMessage(player, playerHideToggledMsg.replace("{state}",
-                MessageUtility.color(newStateString)));
-        plugin.saveConfig("data.yml");
-    }
-
-    public void setPlayerVisibility(ProxiedPlayer target, ProxiedPlayer sender, boolean state) {
-        if(target == sender) setPlayerVisibility(sender, state);
-        else {
-            boolean playerHideState = plugin.getFromDataStorage().getBoolean(target.getUniqueId().toString(), false);
-            if(playerHideState == state) return;
-
-            String playerHideToggledMsg = MessageUtility.color(
-                    plugin.getFromConfig().getString("staffhide.toggled-by-other").replace("{other}", sender.getDisplayName()));
-            String otherPlayerHideToggledMsg = MessageUtility.color(
-                    plugin.getFromConfig().getString("staffhide.toggle-other").replace("{other}", target.getDisplayName()));
-
-            String newStateString = (state) ? plugin.getFromConfig().getString("staffhide.enabled-placeholder"): plugin.getFromConfig().getString("staffhide.disabled-placeholder");
-
-            plugin.getFromDataStorage().set(target.getUniqueId().toString(), state);
-            plugin.sendMessage(target, playerHideToggledMsg.replace("{state}",
-                    MessageUtility.color(newStateString)));
-            plugin.sendMessage(sender, otherPlayerHideToggledMsg.replace("{state}",
-                    MessageUtility.color(newStateString)));
-            plugin.saveConfig("data.yml");
-
-        }
+        return vanishHook.isHidden(playerId);
     }
 }

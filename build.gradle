@@ -41,9 +41,8 @@ dependencies {
 
 
 shadowJar {
-    relocate "com.github.sirblobman.api", "net.mackenziemolloy.bungee.staff.sbcore"
     relocate "org.bstats", "net.mackenziemolloy.bungee.staff.bstats"
-    minimize()
+    // minimize()
 }
 
 tasks.build.dependsOn tasks.shadowJar
