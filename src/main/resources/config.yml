@@ -23,9 +23,13 @@ stafflist-none:
 server-aliases:
   hub: "THE HUB"
 
-hooks:
-  premiumvanish: false # To-do (make a /staffhide) -mackenzie
-  luckperms: false
+# These group of messages is only applicable if you don't have a vanish plugin hook enabled.
+staffhide:
+  enabled-placeholder: "&c&o&nHIDDEN&7 from"
+  disabled-placeholder: "&a&o&nREVEALED&7 on"
+  toggle: "&7You have been {state}&7 the staff list."
+  toggle-other: "&b{other}&7 is now {state}&7 the staff list."
+  toggled-by-other: "&b{other}&7 forced you to be {state}&7 the staff list."
 
 # This section is only applicable when no permissions plugin hook is enabled.
 # To apply a user to a group, simply give the permission "stafflist.ranks.<rank-name>" (for example, mod would be "stafflist.ranks.mod")
@@ -34,3 +38,5 @@ ranks:
   mod:
     prefix: "&e[Mod]"
     weight: 5
+
+notice-understood: false
