@@ -25,13 +25,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 
-import com.github.sirblobman.api.bungeecord.core.CorePlugin;
-import com.github.sirblobman.api.bungeecord.hook.vanish.IVanishHook;
-import com.github.sirblobman.api.bungeecord.premiumvanish.PremiumVanishHook;
-
 import net.mackenziemolloy.bungee.staff.command.CommandList;
 import net.mackenziemolloy.bungee.staff.command.CommandStaffHide;
-import net.mackenziemolloy.bungee.staff.listeners.PremiumVanishUpdate;
 import net.mackenziemolloy.bungee.staff.utility.CommentedConfiguration;
 import net.mackenziemolloy.bungee.staff.utility.MessageUtility;
 import org.bstats.bungeecord.Metrics;
@@ -63,12 +58,6 @@ public final class BungeeStaff extends Plugin {
 
         Logger logger = getLogger();
         logger.info("Loaded successfully, enjoy!");
-
-        CorePlugin corePlugin = (CorePlugin) pluginManager.getPlugin("SirBlobmanBungeeCore");
-        IVanishHook vanishHook = corePlugin.getVanishHook();
-        if(vanishHook instanceof PremiumVanishHook) {
-            pluginManager.registerListener(this, new PremiumVanishUpdate(this));
-        }
 
         int pluginId = 13319;
         new Metrics(this, pluginId);
