@@ -1,0 +1,34 @@
+options:
+  # INTERNAL or LUCKPERMS
+  groupHandler: INTERNAL
+
+  # NONE or PREMIUM_VANISH
+  vanishHandler: NONE
+
+  # Alternative server names
+  serverNameAlias:
+    lobby: "hub"
+
+
+
+# Only used if groupHandler is set to INTERNAL
+groups:
+  # higher weight, higher priority
+  admin:
+    prefix: "&cAdmin"
+    suffix: ""
+    weight: 2
+
+  mod:
+    prefix: "&2Mod"
+    suffix: ""
+    weight: 1
+
+  helper:
+    prefix: "&eHelper"
+    suffix: ""
+    weight: 0
+
+
+language:
+  noPermission: "&cYou do not have permission."
