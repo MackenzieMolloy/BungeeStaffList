@@ -29,7 +29,7 @@ public class Settings {
     groupHandler = groupProvider != null ? groupProvider.getProviderId() : "INTERNAL";
 
     VanishProvider vanishProvider = BungeeStaffList.getInstance().getVanishManager().getProviderById(config.getConfig().getString("options.vanishHandler"));
-    vanishHandler = vanishProvider != null ? vanishProvider.getProviderId() : "INTERNAL";
+    vanishHandler = vanishProvider != null ? vanishProvider.getProviderId() : "NONE";
 
   }
 

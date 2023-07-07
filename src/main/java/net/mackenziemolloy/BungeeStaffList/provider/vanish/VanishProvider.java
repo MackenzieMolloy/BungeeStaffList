@@ -1,5 +1,9 @@
 package net.mackenziemolloy.BungeeStaffList.provider.vanish;
 
+import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
+
+import java.util.UUID;
+
 public abstract class VanishProvider {
 
   protected String providerName = "";
@@ -17,5 +21,16 @@ public abstract class VanishProvider {
     return providerName;
   }
   public String getProviderId() {return providerId;}
+
+  /**
+   * Changes the hidden (vanish) state of a player
+   *
+   * @param uuid Player's UUID you wish to change
+   * @param state The desired Hidden (vanish) state
+   * @return Boolean of successful state set
+   */
+  boolean setVanishState(UUID uuid, boolean state) {
+    return BungeeStaffList.getInstance().getVanishManager().setPlayerState(uuid, state);
+  }
 
 }

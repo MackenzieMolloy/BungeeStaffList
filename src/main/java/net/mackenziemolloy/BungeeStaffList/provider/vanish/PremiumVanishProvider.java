@@ -25,14 +25,16 @@ public class PremiumVanishProvider extends VanishProvider implements Listener {
     return ProxyServer.getInstance().getPluginManager().getPlugin("PremiumVanish") != null;
   }
 
+  // PremiumVanish Event Listener - Listens for players enabling their Vanish
   @EventHandler
   public void onVanishEnable(BungeePlayerHideEvent event) {
-    BungeeStaffList.getInstance().getVanishManager().setPlayerState(event.getPlayer().getUniqueId(), true);
+    this.setVanishState(event.getPlayer().getUniqueId(), true);
   }
 
+  // PremiumVanish Event Listener - Listens for players disabling their Vanish
   @EventHandler
   public void onVanishDisable(BungeePlayerShowEvent event) {
-    BungeeStaffList.getInstance().getVanishManager().setPlayerState(event.getPlayer().getUniqueId(), false);
+    this.setVanishState(event.getPlayer().getUniqueId(), false);
   }
 
 }

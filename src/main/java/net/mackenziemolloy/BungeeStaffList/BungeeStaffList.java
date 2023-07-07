@@ -59,6 +59,11 @@ public class BungeeStaffList extends Plugin {
   public void loadVanishProvider() {
     VanishProvider vanishProvider = vanishManager.getProviderById(Settings.vanishHandler);
     if(vanishProvider == null || !vanishProvider.validate()) {
+      if(Settings.vanishHandler.equals("NONE")) {
+        getLogger().info("A Vanish Provider wasn't loaded due to the configured provider being none or invalid.");
+        return;
+      }
+
       String providerName = vanishProvider == null ? Settings.vanishHandler : vanishProvider.getProviderName();
       getLogger().warning("Failed to validate " + providerName + " vanish provider. Skipping vanish provider hook...");
       Settings.groupHandler = "INTERNAL";
