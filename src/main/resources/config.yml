@@ -28,7 +28,3 @@ groups:
     prefix: "&eHelper"
     suffix: ""
     weight: 0
-
-
-language:
-  noPermission: "&cYou do not have permission."
