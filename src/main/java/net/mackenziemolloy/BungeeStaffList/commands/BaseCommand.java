@@ -5,9 +5,6 @@ import net.mackenziemolloy.BungeeStaffList.config.InternalGroup;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.TabExecutor;
-
-import java.util.UUID;
 
 public class BaseCommand extends Command {
   private final BungeeStaffList bungeeStaffList;
@@ -40,14 +37,21 @@ public class BaseCommand extends Command {
   private void commandStaffHide(CommandSender commandSender) {
     ProxiedPlayer player = (ProxiedPlayer) commandSender;
 
-    boolean currentObj = bungeeStaffList.getPlayerManager().getVanishManager().getPlayerState(player.getUniqueId());
+    boolean currentObj = bungeeStaffList.getVanishManager().getPlayerState(player.getUniqueId());
 
-    boolean success = bungeeStaffList.getPlayerManager().getVanishManager().setPlayerState(player.getUniqueId(), !currentObj);
+    boolean success = bungeeStaffList.getVanishManager().setPlayerState(player.getUniqueId(), !currentObj);
     player.sendMessage("Success: " + success);
   }
+
   private void commandStaffList(CommandSender commandSender) {
-    InternalGroup internalGroup = bungeeStaffList.getGroupManager().getPrimaryGroupProvider().getPrimaryGroup((ProxiedPlayer) commandSender);
+    ProxiedPlayer sender = (ProxiedPlayer) commandSender;
+
+    InternalGroup internalGroup = bungeeStaffList.getGroupManager().getPrimaryGroupProvider().getPrimaryGroup(sender);
     commandSender.sendMessages("Your group is: " + (internalGroup != null ? internalGroup.getGroupName() : "none :("));
+
+    boolean vanishState = bungeeStaffList.getVanishManager().getPlayerState(sender.getUniqueId());
+    commandSender.sendMessages("Your vanish state is: " + vanishState);
   }
+
   private void commandStaffReload(CommandSender commandSender) {}
 }

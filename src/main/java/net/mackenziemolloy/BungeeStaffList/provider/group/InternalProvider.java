@@ -1,7 +1,5 @@
 package net.mackenziemolloy.BungeeStaffList.provider.group;
 
-
-import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
 import net.mackenziemolloy.BungeeStaffList.config.Settings;
 
 public class InternalProvider extends GroupProvider {

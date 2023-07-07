@@ -1,27 +1,69 @@
 package net.mackenziemolloy.BungeeStaffList.manager;
 
 import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
-import net.mackenziemolloy.BungeeStaffList.exception.group.GroupProviderAlreadyRegistered;
+import net.mackenziemolloy.BungeeStaffList.config.Settings;
 
+import net.mackenziemolloy.BungeeStaffList.exception.vanish.VanishProviderAlreadyRegistered;
+import net.mackenziemolloy.BungeeStaffList.provider.vanish.PremiumVanishProvider;
+import net.mackenziemolloy.BungeeStaffList.provider.vanish.VanishProvider;
+
+import java.util.HashMap;
 import java.util.UUID;
 
 public class VanishManager {
 
-  /*
+  private HashMap<String, VanishProvider> vanishProviders;
 
-    Same as GroupManager, just instead it's storing event listeners
-    There is a constant InternalVanish system where the vanish state of players is altered by the listeners
+  public VanishManager() {
+    vanishProviders = new HashMap<>();
 
-    VanishManager#getPlayerState(Player)
-    VanishManager#setPlayerState(Player, Boolean)
+    // Register build-in vanish providers
+    try {
 
-   */
+      // PremiumVanish Group Provider
+      PremiumVanishProvider premiumVanishProvider = new PremiumVanishProvider();
+      registerProvider(premiumVanishProvider.getProviderId(), premiumVanishProvider);
 
-  PlayerManager playerManager;
 
-  public VanishManager(PlayerManager playerManager) {
-    playerManager = this.playerManager;
+    } catch (VanishProviderAlreadyRegistered ex) {
+      ex.printStackTrace();
+    }
+
   }
+
+  /**
+   * Registers a VanishProvider for use within the plugin
+   *
+   * @param providerId Unique ID for the vanish provider
+   * @param vanishProvider VanishProvider instance
+   * @throws VanishProviderAlreadyRegistered when a provider with the unique id is already registered
+   */
+  public void registerProvider(String providerId, VanishProvider vanishProvider) throws VanishProviderAlreadyRegistered {
+    providerId = providerId.toUpperCase();
+
+    if(vanishProviders.containsKey(providerId)) throw new VanishProviderAlreadyRegistered(providerId);
+    vanishProviders.put(providerId, vanishProvider);
+  }
+
+  /**
+   * Returns the primary VanishProvider specified in the config.yml
+   */
+  public VanishProvider getPrimaryVanishProvider() {
+    return vanishProviders.get(Settings.vanishHandler);
+  }
+
+  /**
+   * Returns the VanishProvider with the specified id
+   *
+   * @param providerId The ProviderID for the provider you're after
+   */
+  public VanishProvider getProviderById(String providerId) {
+    return vanishProviders.get(providerId);
+  }
+
+  //
+  // PLAYER SPECIFIC
+  //
 
   /**
    * Gets the vanished state of a player from their UUID
@@ -30,7 +72,7 @@ public class VanishManager {
    * @return boolean vanished state
    */
   public boolean getPlayerState(UUID uuid) {
-    return (boolean) playerManager.get(uuid, "hidden");
+    return (boolean) BungeeStaffList.getInstance().getPlayerManager().get(uuid, "hidden");
   }
 
   /**
@@ -41,7 +83,7 @@ public class VanishManager {
    * @return boolean success state
    */
   public boolean setPlayerState(UUID uuid, boolean state) {
-    return playerManager.set(uuid, "hidden", state);
+    return BungeeStaffList.getInstance().getPlayerManager().set(uuid, "hidden", state);
   }
 
 }

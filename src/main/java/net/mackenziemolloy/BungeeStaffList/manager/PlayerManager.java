@@ -2,9 +2,6 @@ package net.mackenziemolloy.BungeeStaffList.manager;
 
 import com.google.common.io.Files;
 import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
-import net.mackenziemolloy.BungeeStaffList.exception.group.GroupProviderAlreadyRegistered;
-import net.mackenziemolloy.BungeeStaffList.util.FileUtils;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -15,14 +12,8 @@ import java.util.UUID;
 
 public class PlayerManager {
 
-  private VanishManager vanishManager;
 
   public PlayerManager() {
-    vanishManager = new VanishManager(this);
-  }
-
-  public VanishManager getVanishManager() {
-    return vanishManager;
   }
 
   /*

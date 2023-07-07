@@ -4,11 +4,9 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
-import net.luckperms.api.node.types.PrefixNode;
 import net.mackenziemolloy.BungeeStaffList.config.InternalGroup;
 import net.md_5.bungee.api.ProxyServer;
 
-import java.util.Optional;
 
 public class LuckPermsProvider extends GroupProvider {
 

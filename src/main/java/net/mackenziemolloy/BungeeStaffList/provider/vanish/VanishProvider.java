@@ -1,17 +1,21 @@
 package net.mackenziemolloy.BungeeStaffList.provider.vanish;
 
-import net.md_5.bungee.api.plugin.Event;
-import net.md_5.bungee.event.EventHandler;
-
 public abstract class VanishProvider {
 
   protected String providerName = "";
   protected String providerId = "";
 
   public VanishProvider() {
-
+    registerListeners();
   }
 
-  @EventHandler
-  public abstract void vanishChangeEvent(Class<? extends Event> event);
+  public abstract void registerListeners();
+
+  public abstract boolean validate();
+
+  public String getProviderName() {
+    return providerName;
+  }
+  public String getProviderId() {return providerId;}
+
 }

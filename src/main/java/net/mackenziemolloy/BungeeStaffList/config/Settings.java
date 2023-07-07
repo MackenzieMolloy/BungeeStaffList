@@ -3,6 +3,7 @@ package net.mackenziemolloy.BungeeStaffList.config;
 import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
 import net.mackenziemolloy.BungeeStaffList.core.PluginConfig;
 import net.mackenziemolloy.BungeeStaffList.provider.group.GroupProvider;
+import net.mackenziemolloy.BungeeStaffList.provider.vanish.VanishProvider;
 import net.md_5.bungee.config.Configuration;
 
 import java.util.HashMap;
@@ -26,6 +27,9 @@ public class Settings {
 
     GroupProvider groupProvider = BungeeStaffList.getInstance().getGroupManager().getProviderById(config.getConfig().getString("options.groupHandler"));
     groupHandler = groupProvider != null ? groupProvider.getProviderId() : "INTERNAL";
+
+    VanishProvider vanishProvider = BungeeStaffList.getInstance().getVanishManager().getProviderById(config.getConfig().getString("options.vanishHandler"));
+    vanishHandler = vanishProvider != null ? vanishProvider.getProviderId() : "INTERNAL";
 
   }
 
