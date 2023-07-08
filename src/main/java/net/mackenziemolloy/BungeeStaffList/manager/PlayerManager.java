@@ -2,13 +2,18 @@ package net.mackenziemolloy.BungeeStaffList.manager;
 
 import com.google.common.io.Files;
 import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
+import net.mackenziemolloy.BungeeStaffList.config.InternalGroup;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PlayerManager {
 
@@ -104,6 +109,30 @@ public class PlayerManager {
     if(configuration == null) return false;
 
     return configuration.get(path);
+  }
+
+  public HashMap<ProxiedPlayer, InternalGroup> getOnlineStaff() {
+    HashMap<ProxiedPlayer, InternalGroup> onlineStaff = new HashMap<>();
+
+    for(ProxiedPlayer player: ProxyServer.getInstance().getPlayers()) {
+      InternalGroup internalGroup = BungeeStaffList.getInstance().getGroupManager().getPrimaryGroupProvider().getPrimaryGroup(player);
+      if(internalGroup == null) continue;
+
+      if(BungeeStaffList.getInstance().getVanishManager().getPlayerState(player.getUniqueId())) continue;
+
+      onlineStaff.put(player, internalGroup);
+    }
+
+    // Sort the HashMap by InternalGroup's weight followed by ProxiedPlayer's display name
+    List<Map.Entry<ProxiedPlayer, InternalGroup>> sortedList = new ArrayList<>(onlineStaff.entrySet());
+    sortedList.sort(Comparator.comparingInt(entry -> entry.getValue().getGroupWeight()));
+    sortedList.sort(Comparator.comparing(entry -> entry.getKey().getDisplayName()));
+
+    // Create a new LinkedHashMap to preserve the sorted order
+    LinkedHashMap<ProxiedPlayer, InternalGroup> sortedMap = new LinkedHashMap<>();
+    sortedList.forEach(entry -> sortedMap.put(entry.getKey(), entry.getValue()));
+
+    return sortedMap;
   }
 
 }

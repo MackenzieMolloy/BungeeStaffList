@@ -1,1 +1,19 @@
 noPermission: "&cYou do not have permission."
+mustBePlayer: "&cYou must be a player to use this command."
+
+hide:
+  notStaff: "&cYou are not a member of staff."
+  error: "&4An error occurred whilst changing hidden state. Please check console."
+  hidden: "&aYou have been hidden from the staff list."
+  revealed: "&eYou have been revealed on the staff list."
+
+list:
+  header:
+    - " "
+    - "&3&lStaff Online"
+    - " "
+  footer:
+    - " "
+    - "&7You can contact online staff using &f/msg"
+    - " "
+  playerFormat: "%prefix%%username% is currently on &b%server%"

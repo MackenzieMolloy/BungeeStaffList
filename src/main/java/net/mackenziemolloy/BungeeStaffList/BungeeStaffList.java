@@ -1,6 +1,7 @@
 package net.mackenziemolloy.BungeeStaffList;
 
-import net.mackenziemolloy.BungeeStaffList.commands.BaseCommand;
+import net.mackenziemolloy.BungeeStaffList.command.BaseCommand;
+import net.mackenziemolloy.BungeeStaffList.config.Lang;
 import net.mackenziemolloy.BungeeStaffList.config.Settings;
 import net.mackenziemolloy.BungeeStaffList.core.PluginConfig;
 import net.mackenziemolloy.BungeeStaffList.manager.GroupManager;
@@ -28,6 +29,7 @@ public class BungeeStaffList extends Plugin {
     vanishManager = new VanishManager();
 
     loadConfig();
+    loadLang();
     loadGroupProvider();
     loadVanishProvider();
 
@@ -41,6 +43,11 @@ public class BungeeStaffList extends Plugin {
     // Load the YAML file and InputStream
     Settings.setConfig(new PluginConfig(bungeeStaffList, "config.yml"));
     Settings.load();
+  }
+
+  public void loadLang() {
+    Lang.setConfig(new PluginConfig(bungeeStaffList, "lang.yml"));
+    Lang.load();
   }
 
   public void loadGroupProvider() {

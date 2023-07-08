@@ -72,7 +72,8 @@ public class VanishManager {
    * @return boolean vanished state
    */
   public boolean getPlayerState(UUID uuid) {
-    return (boolean) BungeeStaffList.getInstance().getPlayerManager().get(uuid, "hidden");
+    Object state = BungeeStaffList.getInstance().getPlayerManager().get(uuid, "hidden");
+    return state != null ? (boolean) state : false;
   }
 
   /**

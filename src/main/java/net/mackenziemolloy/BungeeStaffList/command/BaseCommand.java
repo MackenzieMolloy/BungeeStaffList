@@ -1,17 +1,33 @@
-package net.mackenziemolloy.BungeeStaffList.commands;
+package net.mackenziemolloy.BungeeStaffList.command;
 
 import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
+import net.mackenziemolloy.BungeeStaffList.command.subcommand.VanishCommand;
 import net.mackenziemolloy.BungeeStaffList.config.InternalGroup;
+import net.mackenziemolloy.BungeeStaffList.config.Lang;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BaseCommand extends Command {
   private final BungeeStaffList bungeeStaffList;
+
+  HashMap<String, SubCommand> subCommands;
 
   public BaseCommand(BungeeStaffList bungeeStaffList) {
     super("bungeestaff", "", "staff", "bsl");
     this.bungeeStaffList = bungeeStaffList;
+
+    loadSubCommands();
+  }
+
+  private void loadSubCommands() {
+    this.subCommands = new HashMap<>();
+
+    SubCommand vanishCommand = new VanishCommand();
+    subCommands.put(vanishCommand.name, vanishCommand);
   }
 
   @Override
@@ -23,28 +39,25 @@ public class BaseCommand extends Command {
     if(args.length == 0) commandStaffList(commandSender);
     else {
 
-      switch (args[0]) {
-        case "hide":
-          commandStaffHide(commandSender);
-        case "reload":
-          commandStaffReload(commandSender);
-        default:
-          commandSender.sendMessage("Sub-command unknown.");
+      SubCommand subCommand = subCommands.get(args[0].toLowerCase());
+      if(subCommand == null) {
+        commandStaffList(commandSender);
+        return;
       }
+
+      subCommand.execute(commandSender);
     }
-  }
-
-  private void commandStaffHide(CommandSender commandSender) {
-    ProxiedPlayer player = (ProxiedPlayer) commandSender;
-
-    boolean currentObj = bungeeStaffList.getVanishManager().getPlayerState(player.getUniqueId());
-
-    boolean success = bungeeStaffList.getVanishManager().setPlayerState(player.getUniqueId(), !currentObj);
-    player.sendMessage("Success: " + success);
   }
 
   private void commandStaffList(CommandSender commandSender) {
     ProxiedPlayer sender = (ProxiedPlayer) commandSender;
+
+    HashMap<ProxiedPlayer, InternalGroup> staffMembers = BungeeStaffList.getInstance().getPlayerManager().getOnlineStaff();
+    if(staffMembers.isEmpty()) sender.sendMessage("no staff online :o");
+
+    staffMembers.forEach((key, value) -> {
+      commandSender.sendMessage(Lang.listFormat.replace("%prefix%", value.getGroupPrefix()).replace("%username%", key.getDisplayName()).replace("%server%", key.getServer().getInfo().getName()));
+    });
 
     InternalGroup internalGroup = bungeeStaffList.getGroupManager().getPrimaryGroupProvider().getPrimaryGroup(sender);
     commandSender.sendMessages("Your group is: " + (internalGroup != null ? internalGroup.getGroupName() : "none :("));
@@ -53,5 +66,4 @@ public class BaseCommand extends Command {
     commandSender.sendMessages("Your vanish state is: " + vanishState);
   }
 
-  private void commandStaffReload(CommandSender commandSender) {}
 }
