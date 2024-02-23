@@ -12,6 +12,7 @@ import net.mackenziemolloy.BungeeStaffList.provider.vanish.VanishProvider;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
+import org.bstats.bungeecord.Metrics;
 
 public class BungeeStaffList extends Plugin {
 
@@ -36,6 +37,10 @@ public class BungeeStaffList extends Plugin {
     ProxyServer proxy = getProxy();
     PluginManager pluginManager = proxy.getPluginManager();
     pluginManager.registerCommand(this, new BaseCommand(this));
+
+    // BStats
+    int pluginId = 13319;
+    Metrics metrics = new Metrics(this, pluginId);
 
   }
 

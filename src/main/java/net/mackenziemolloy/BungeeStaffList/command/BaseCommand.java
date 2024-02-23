@@ -4,12 +4,13 @@ import net.mackenziemolloy.BungeeStaffList.BungeeStaffList;
 import net.mackenziemolloy.BungeeStaffList.command.subcommand.VanishCommand;
 import net.mackenziemolloy.BungeeStaffList.config.InternalGroup;
 import net.mackenziemolloy.BungeeStaffList.config.Lang;
+import net.mackenziemolloy.BungeeStaffList.util.sirblobman.MessageUtility;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BaseCommand extends Command {
   private final BungeeStaffList bungeeStaffList;
@@ -53,17 +54,18 @@ public class BaseCommand extends Command {
     ProxiedPlayer sender = (ProxiedPlayer) commandSender;
 
     HashMap<ProxiedPlayer, InternalGroup> staffMembers = BungeeStaffList.getInstance().getPlayerManager().getOnlineStaff();
-    if(staffMembers.isEmpty()) sender.sendMessage("no staff online :o");
+
+    List<String> staffListMsg = new ArrayList<>();
+
+    staffListMsg.addAll(Lang.listHeader.stream().map(e -> e.replace("%staff_online%", "" + staffMembers.size())).collect(Collectors.toList()));
+    if(staffMembers.isEmpty()) staffListMsg.add(MessageUtility.colorize(Lang.noStaffOnline));
 
     staffMembers.forEach((key, value) -> {
-      commandSender.sendMessage(Lang.listFormat.replace("%prefix%", value.getGroupPrefix()).replace("%username%", key.getDisplayName()).replace("%server%", key.getServer().getInfo().getName()));
+      staffListMsg.add(Lang.listFormat.replace("%prefix%", value.getGroupPrefix()).replace("%username%", key.getDisplayName()).replace("%server%", key.getServer().getInfo().getName()));
     });
+    staffListMsg.addAll(Lang.listFooter.stream().map(e -> e.replace("%staff_online%", "" + staffMembers.size())).collect(Collectors.toList()));
 
-    InternalGroup internalGroup = bungeeStaffList.getGroupManager().getPrimaryGroupProvider().getPrimaryGroup(sender);
-    commandSender.sendMessages("Your group is: " + (internalGroup != null ? internalGroup.getGroupName() : "none :("));
-
-    boolean vanishState = bungeeStaffList.getVanishManager().getPlayerState(sender.getUniqueId());
-    commandSender.sendMessages("Your vanish state is: " + vanishState);
+    commandSender.sendMessage(String.join("\n", staffListMsg.stream().map(MessageUtility::colorize).collect(Collectors.toList())));
   }
 
 }

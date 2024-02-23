@@ -16,4 +16,5 @@ list:
     - " "
     - "&7You can contact online staff using &f/msg"
     - " "
-  playerFormat: "%prefix%%username% is currently on &b%server%"
+  playerFormat: "%prefix%%username%&7 is currently on &b%server%"
+  noStaffOnline: "&cThere are no staff online."

@@ -1,6 +1,7 @@
 package net.mackenziemolloy.BungeeStaffList.provider.group;
 
 import net.mackenziemolloy.BungeeStaffList.config.InternalGroup;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Comparator;

@@ -24,7 +24,7 @@ public class LuckPermsProvider extends GroupProvider {
 
         String groupPrefix = group.getNodes(NodeType.PREFIX).stream().findFirst().map(Node::getKey).orElse("");
         String groupSuffix = group.getNodes(NodeType.SUFFIX).stream().findFirst().map(Node::getKey).orElse("");
-        Integer groupWeight = Integer.valueOf(group.getNodes(NodeType.WEIGHT).stream().findFirst().map(Node::getKey).orElse("0"));
+        Integer groupWeight = Integer.valueOf(group.getNodes(NodeType.WEIGHT).stream().findFirst().map(Node::getKey).orElse("0").replace("weight.", ""));
 
         InternalGroup internalGroup = new InternalGroup(group.getName(), groupPrefix, groupSuffix, groupWeight);
         super.internalGroups.add(internalGroup);

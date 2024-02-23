@@ -19,6 +19,7 @@ public class Lang {
     public static String listFormat;
     public static List<String> listHeader;
     public static List<String> listFooter;
+    public static String noStaffOnline;
 
     public static void setConfig(PluginConfig pluginConfig) {
         config = pluginConfig;
@@ -36,6 +37,9 @@ public class Lang {
         listFormat = config.getConfig().getString("list.playerFormat");
         listHeader = config.getConfig().getStringList("list.header");
         listFooter = config.getConfig().getStringList("list.footer");
+        noStaffOnline = config.getConfig().getString("list.noStaffOnline");
     }
+
+
 
 }
